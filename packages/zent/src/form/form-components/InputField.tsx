@@ -1,23 +1,60 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
 
-import Input, { InputType } from '../../input';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+import { FormControl } from '../Control';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
+import Input, { IInputProps, IInputChangeEvent } from '../../input';
+import {
+  useField,
+  IFormFieldModelProps,
+  IFormComponentCommonProps,
+  defaultRenderError,
+} from '../shared';
 
-export interface IFormInputWrapProps {
-  type?: InputType;
+export interface IFormInputFieldProps
+  extends IFormComponentCommonProps<
+    string,
+    Omit<IInputProps, 'value' | 'name' | 'defaultValue'>
+  > {}
+
+function mapInputEventToValue(
+  e: IInputChangeEvent | React.ChangeEvent<HTMLInputElement>
+): string {
+  return e.target.value || '';
 }
 
-class InputWrap extends Component<IFormInputWrapProps> {
-  render() {
-    const { type = 'text', ...rest } = this.props;
-    const passableProps = omit(rest, unknownProps);
-    return <Input {...passableProps} type={type as any} />;
-  }
-}
-
-const InputField = getControlGroup(InputWrap);
-
-export default InputField;
+export const FormInputField: React.FunctionComponent<
+  IFormInputFieldProps & IFormFieldModelProps<string>
+> = props => {
+  const [childProps, { error }, ref] = useField(
+    props,
+    '',
+    mapInputEventToValue
+  );
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <Input {...otherProps as any} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

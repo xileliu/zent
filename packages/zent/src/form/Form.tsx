@@ -1,70 +1,170 @@
-/**
- * The design of this component is broken. Data flow becomes more and more complex
- * when supporting advanced features like FieldArray.
- * It will eventually become unmaintainable.
- *
- * A real-life case for 'premature optimization is the root of all evil'.
- */
-
-import { PureComponent } from 'react';
 import * as React from 'react';
-import classNames from 'classnames';
-import noop from 'lodash-es/noop';
+import cx from 'classnames';
+import {
+  IForm,
+  FormProvider,
+  ValidateStrategy,
+  useForm as superUseForm,
+  FormStrategy,
+  FormModel,
+  useField,
+  useFieldArray,
+  useFieldSet,
+  field,
+  set,
+  array,
+  form,
+} from 'formulr';
+import { IZentFormContext, FormContext } from './context';
 
-export interface IFormProps {
-  className?: string;
-  prefix?: string;
-  vertical?: boolean;
-  horizontal?: boolean;
-  inline?: boolean;
-  onSubmit?: React.FormEventHandler<HTMLFormElement>;
-  style?: React.CSSProperties;
-  disableEnterSubmit?: boolean;
+export interface IFormProps<T extends object = any>
+  extends React.FormHTMLAttributes<HTMLFormElement> {
+  type: 'horizontal' | 'vertical';
+  form: ZentForm<T>;
+  scrollerRef?: React.RefObject<HTMLElement>;
 }
 
-class Form extends PureComponent<IFormProps> {
-  static defaultProps = {
-    prefix: 'zent',
-    onSubmit: noop,
-    disableEnterSubmit: true,
-  };
+function preventDefault(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+}
 
-  onKeyDown = event => {
-    // 默认禁止输入框回车触发表单提交事件
-    const isFromInput = event.target.tagName === 'INPUT';
+export class ZentForm<T extends object> implements IForm {
+  constructor(
+    readonly inner: IForm,
+    readonly zentFormContext: IZentFormContext
+  ) {}
 
-    if (isFromInput && this.props.disableEnterSubmit && event.key === 'Enter') {
-      event.preventDefault();
+  get ctx() {
+    return this.inner.ctx;
+  }
+
+  get model() {
+    return this.inner.model;
+  }
+
+  validate(strategy: ValidateStrategy = ValidateStrategy.IgnoreAsync) {
+    this.inner.model.validate(strategy);
+  }
+
+  isValid() {
+    return this.inner.model.isValid();
+  }
+
+  isValidating() {
+    return this.inner.model.isValidating$.getValue();
+  }
+
+  getValue() {
+    return this.inner.model.getRawValue();
+  }
+
+  initialize(value: T) {
+    this.inner.model.initialize(value);
+  }
+
+  patchValue(value: T) {
+    this.inner.model.patchValue(value);
+  }
+
+  resetValue() {
+    this.inner.model.resetValue();
+  }
+
+  prepareSubmit(scrollToError = true): boolean {
+    if (this.isValidating()) {
+      return false;
     }
-  };
-
-  render() {
-    const {
-      prefix,
-      className,
-      style,
-      horizontal,
-      inline,
-      onSubmit,
-    } = this.props;
-    const formClassName = classNames({
-      [`${prefix}-form`]: true,
-      [`${prefix}-form--horizontal`]: horizontal,
-      [`${prefix}-form--inline`]: inline,
-      [`${prefix}-form--vertical`]: !horizontal && !inline,
-      [className]: !!className,
-    });
-    return (
-      <form
-        className={formClassName}
-        style={style}
-        onSubmit={onSubmit}
-        onKeyDown={this.onKeyDown}
-      >
-        {this.props.children}
-      </form>
+    this.validate(
+      ValidateStrategy.IgnoreAsync | ValidateStrategy.IncludeUntouched
     );
+    const isValid = this.isValid();
+    if (isValid) {
+      return true;
+    }
+    if (scrollToError) {
+      const { children } = this.zentFormContext;
+      for (let i = 0; i < children.length; i += 1) {
+        const child = children[i];
+        if (!child.isValid()) {
+          child.scrollTo();
+        }
+      }
+    }
+    return false;
   }
 }
 
-export default Form;
+export function useForm<T extends object = any>(
+  arg: FormStrategy.View | (() => FormModel<T>)
+) {
+  const inner = superUseForm(arg);
+  const zentFormContext = React.useMemo<IZentFormContext>(
+    () => ({
+      children: [],
+    }),
+    [inner]
+  );
+  return React.useMemo(() => new ZentForm(inner, zentFormContext), [inner]);
+}
+
+export interface IFormApi {
+  useForm: typeof useForm;
+  useField: typeof useField;
+  useFieldArray: typeof useFieldArray;
+  useFieldSet: typeof useFieldSet;
+  field: typeof field;
+  set: typeof set;
+  array: typeof array;
+  form: typeof form;
+}
+
+export const Form: React.ForwardRefExoticComponent<
+  IFormProps & React.RefAttributes<HTMLFormElement>
+> &
+  IFormApi = React.forwardRef<HTMLFormElement, IFormProps>(
+  (
+    {
+      children,
+      className,
+      form,
+      type = 'vertical',
+      onSubmit = preventDefault,
+      scrollerRef,
+      ...props
+    },
+    ref
+  ) => {
+    form.zentFormContext.scrollerRef = scrollerRef;
+    return (
+      <FormContext.Provider value={form.zentFormContext}>
+        <FormProvider value={form.ctx}>
+          <form
+            ref={ref}
+            {...props}
+            className={cx(
+              'zent-form',
+              {
+                'zent-form-vertical': type === 'vertical',
+                'zent-form-horizontal': type === 'horizontal',
+              },
+              className
+            )}
+            onSubmit={onSubmit}
+          >
+            {children}
+          </form>
+        </FormProvider>
+      </FormContext.Provider>
+    );
+  }
+) as any;
+
+Form.useForm = useForm;
+Form.useField = useField;
+Form.useFieldArray = useFieldArray;
+Form.useFieldSet = useFieldSet;
+Form.displayName = 'ZentForm';
+Form.field = field;
+Form.set = set;
+Form.array = array;
+Form.form = form;

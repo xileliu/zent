@@ -1,22 +1,57 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import QuarterPicker, {
+  IQuarterPickerProps,
+  QuarterPickerValue,
+} from '../../datetimepicker/QuarterPicker';
+import { FormControl } from '../Control';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-import QuarterPicker from '../../datetimepicker/QuarterPicker';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+export interface IFormQuarterPickerFieldProps
+  extends IFormComponentCommonProps<
+    QuarterPickerValue,
+    Omit<IQuarterPickerProps, 'value'>
+  > {}
 
-export interface IFormQuarterPickerWrapProps {
-  dateFormat?: string;
-}
-
-class QuarterPickerWrap extends Component<IFormQuarterPickerWrapProps> {
-  render() {
-    const { dateFormat } = this.props;
-    const passableProps = omit(this.props, unknownProps, ['dateFormat']);
-    return <QuarterPicker {...passableProps} format={dateFormat} />;
-  }
-}
-const QuarterPickerField = getControlGroup(QuarterPickerWrap);
-
-export default QuarterPickerField;
+export const FormQuarterPickerField: React.FunctionComponent<
+  IFormQuarterPickerFieldProps & IFormFieldCommonProps<QuarterPickerValue>
+> = props => {
+  const [childProps, { error }, ref] = useField<
+    QuarterPickerValue,
+    QuarterPickerValue,
+    IQuarterPickerProps
+  >(props, [], noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <QuarterPicker {...otherProps} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

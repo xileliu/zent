@@ -1,17 +1,55 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
 
-import NumberInput from '../../number-input';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+import NumberInput, { INumberInputProps } from '../../number-input';
+import { FormControl } from '../Control';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-class NumberInputWrap extends Component {
-  render() {
-    const passableProps = omit(this.props, unknownProps);
-    return <NumberInput {...passableProps} />;
-  }
-}
-const NumberInputField = getControlGroup(NumberInputWrap);
+export interface IFormNumberInputFieldProps
+  extends IFormComponentCommonProps<
+    string,
+    Omit<INumberInputProps, 'value' | 'name'>
+  > {}
 
-export default NumberInputField;
+export const FormNumberInputField: React.FunctionComponent<
+  IFormNumberInputFieldProps & IFormFieldCommonProps<string>
+> = props => {
+  const [childProps, { error }, ref] = useField<
+    string,
+    string,
+    INumberInputProps
+  >(props, '', noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <NumberInput {...otherProps} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

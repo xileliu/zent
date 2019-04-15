@@ -1,22 +1,56 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import { ICheckboxGroupProps, CheckboxGroup } from '../../checkbox';
+import { FormControl } from '../Control';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-import Checkbox from '../../checkbox';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
-
-const CheckboxGroup = Checkbox.Group;
-
-class CheckboxGroupWrap extends Component {
-  render() {
-    const passableProps = omit(this.props, unknownProps);
-    return (
-      <CheckboxGroup className="zent-form__checkbox-group" {...passableProps} />
-    );
-  }
+export interface IFormCheckboxGroupFieldProps<T>
+  extends IFormComponentCommonProps<T[], Omit<ICheckboxGroupProps, 'value'>> {
+  children?: React.ReactNode;
 }
 
-const CheckboxGroupField = getControlGroup(CheckboxGroupWrap);
-
-export default CheckboxGroupField;
+export function FormCheckboxGroupField<T>(
+  props: IFormCheckboxGroupFieldProps<T> & IFormFieldCommonProps<T[]>
+) {
+  const [childProps, { error }, ref] = useField<T[], T[], ICheckboxGroupProps>(
+    props,
+    [],
+    noopMapEventToValue
+  );
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+    children,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <CheckboxGroup {...otherProps} {...childProps}>
+        {children}
+      </CheckboxGroup>
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+}

@@ -1,22 +1,61 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import { FormControl } from '../Control';
+import { DatePickers } from '../../datetimepicker/common/types';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import DateRangePicker, {
+  IDateRangePickerProps,
+} from '../../datetimepicker/DateRangePicker';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-import DateRangePicker from '../../datetimepicker/DateRangePicker';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+export interface IFormDateRangePickerFieldProps
+  extends IFormComponentCommonProps<
+    DatePickers.RangeValue,
+    Omit<IDateRangePickerProps, 'value'>
+  > {}
 
-export interface IFormDateRangePickerWrapProps {
-  dateFormat?: string;
+function dateDefaultValueFactory(): DatePickers.RangeValue {
+  return [new Date(), new Date()];
 }
 
-class DateRangePickerWrap extends Component<IFormDateRangePickerWrapProps> {
-  render() {
-    const { dateFormat } = this.props;
-    const passableProps = omit(this.props, unknownProps, ['dateFormat']);
-    return <DateRangePicker {...passableProps} format={dateFormat} />;
-  }
-}
-const DateRangePickerField = getControlGroup(DateRangePickerWrap);
-
-export default DateRangePickerField;
+export const FormDateRangePickerField: React.FunctionComponent<
+  IFormDateRangePickerFieldProps & IFormFieldCommonProps<DatePickers.RangeValue>
+> = props => {
+  const [childProps, { error }, ref] = useField<
+    DatePickers.RangeValue,
+    DatePickers.RangeValue,
+    IDateRangePickerProps
+  >(props, dateDefaultValueFactory, noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <DateRangePicker {...otherProps} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

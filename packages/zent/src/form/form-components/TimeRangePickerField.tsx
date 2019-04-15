@@ -1,22 +1,61 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import { FormControl } from '../Control';
+import { DatePickers } from '../../datetimepicker/common/types';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import TimeRangePicker, {
+  ITimeRangePickerProps,
+} from '../../datetimepicker/TimeRangePicker';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-import TimeRangePicker from '../../datetimepicker/TimeRangePicker';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+export interface IFormTimeRangePickerFieldProps
+  extends IFormComponentCommonProps<
+    DatePickers.RangeValue,
+    Omit<ITimeRangePickerProps, 'value'>
+  > {}
 
-export interface IFormTimeRangePickerWrapProps {
-  timeFormat: string;
+function dateDefaultValueFactory(): DatePickers.RangeValue {
+  return [new Date(), new Date()];
 }
 
-class TimeRangePickerWrap extends Component<IFormTimeRangePickerWrapProps> {
-  render() {
-    const { timeFormat } = this.props;
-    const passableProps = omit(this.props, unknownProps, ['timeFormat']);
-    return <TimeRangePicker {...passableProps} format={timeFormat} />;
-  }
-}
-const TimeRangePickerField = getControlGroup(TimeRangePickerWrap);
-
-export default TimeRangePickerField;
+export const FormTimeRangePickerField: React.FunctionComponent<
+  IFormTimeRangePickerFieldProps & IFormFieldCommonProps<DatePickers.RangeValue>
+> = props => {
+  const [childProps, { error }, ref] = useField<
+    DatePickers.RangeValue,
+    DatePickers.RangeValue,
+    ITimeRangePickerProps
+  >(props, dateDefaultValueFactory, noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <TimeRangePicker {...otherProps} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

@@ -1,21 +1,51 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import ColorPicker, { IColorPickerProps } from '../../colorpicker';
+import { FormControl } from '../Control';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
 
-import ColorPicker from '../../colorpicker';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+export interface IFormColorPickerFieldProps
+  extends IFormComponentCommonProps<string, Omit<IColorPickerProps, 'color'>> {}
 
-export interface IFormColorPickerWrapProps {
-  value?: string;
-}
-
-class ColorPickerWrap extends Component<IFormColorPickerWrapProps> {
-  render() {
-    const passableProps = omit(this.props, unknownProps);
-    return <ColorPicker {...passableProps} color={this.props.value} />;
-  }
-}
-const ColorPickerField = getControlGroup(ColorPickerWrap);
-
-export default ColorPickerField;
+export const FormColorPickerField: React.FunctionComponent<
+  IFormColorPickerFieldProps & IFormFieldCommonProps<string>
+> = props => {
+  const [{ value, ...passedProps }, { error }, ref] = useField<
+    string,
+    string,
+    IColorPickerProps
+  >(props, '', noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <ColorPicker {...otherProps} {...passedProps} color={value} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};

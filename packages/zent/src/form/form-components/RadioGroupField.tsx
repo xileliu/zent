@@ -1,24 +1,56 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
 
-import Radio from '../../radio';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+import { IRadioGroupProps, RadioGroup, IRadioEvent } from '../../radio';
+import {
+  IFormFieldCommonProps,
+  useField,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import { FormControl } from '../Control';
+import { FormNotice } from '../Notice';
+import { FormDescription } from '../Description';
 
-const RadioGroup = Radio.Group;
-
-export interface IFormRadioGroupWrapProps {
-  value: unknown;
+export interface IFormRadioGroupFieldProps<T>
+  extends IFormComponentCommonProps<T, Omit<IRadioGroupProps, 'value'>> {
+  children?: React.ReactNode;
 }
 
-class RadioGroupWrap extends Component<IFormRadioGroupWrapProps> {
-  render() {
-    const passableProps: any = omit(this.props, unknownProps);
-    return <RadioGroup className="zent-form__radio-group" {...passableProps} />;
-  }
+function mapRadioEvent(e: IRadioEvent) {
+  return e.target.value;
 }
 
-const RadioGroupField = getControlGroup(RadioGroupWrap);
-
-export default RadioGroupField;
+export function FormRadioGroupField<T>(
+  props: IFormRadioGroupFieldProps<T> & IFormFieldCommonProps<T>
+) {
+  const [childProps, { error }, ref] = useField(props, '', mapRadioEvent);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    children,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <RadioGroup {...otherProps} {...childProps}>
+        {children}
+      </RadioGroup>
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+}

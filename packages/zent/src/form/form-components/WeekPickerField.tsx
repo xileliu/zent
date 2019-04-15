@@ -1,22 +1,55 @@
-import { Component } from 'react';
 import * as React from 'react';
-import omit from 'lodash-es/omit';
+import { Omit } from 'utility-types';
+import { FormControl } from '../Control';
+import {
+  useField,
+  IFormFieldCommonProps,
+  noopMapEventToValue,
+  defaultRenderError,
+  IFormComponentCommonProps,
+} from '../shared';
+import WeekPicker, { IWeekPickerProps } from '../../datetimepicker/WeekPicker';
+import { FormDescription } from '../Description';
+import { FormNotice } from '../Notice';
+import { DatePickers } from '../../datetimepicker/common/types';
 
-import WeekPicker from '../../datetimepicker/WeekPicker';
-import getControlGroup from '../getControlGroup';
-import unknownProps from '../unknownProps';
+export interface IFormWeekPickerFieldProps
+  extends IFormComponentCommonProps<
+    DatePickers.RangeValue,
+    Omit<IWeekPickerProps, 'value'>
+  > {}
 
-export interface IFormWeekPickerWrapProps {
-  dateFormat: string;
-}
-
-class WeekPickerWrap extends Component<IFormWeekPickerWrapProps> {
-  render() {
-    const { dateFormat } = this.props;
-    const passableProps = omit(this.props, unknownProps, ['dateFormat']);
-    return <WeekPicker {...passableProps} format={dateFormat} />;
-  }
-}
-const WeekPickerField = getControlGroup(WeekPickerWrap);
-
-export default WeekPickerField;
+export const FormWeekPickerField: React.FunctionComponent<
+  IFormWeekPickerFieldProps & IFormFieldCommonProps<DatePickers.RangeValue>
+> = props => {
+  const [childProps, { error }, ref] = useField<
+    DatePickers.RangeValue,
+    DatePickers.RangeValue,
+    IWeekPickerProps
+  >(props, [], noopMapEventToValue);
+  const {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    props: otherProps,
+  } = props;
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      <WeekPicker {...otherProps} {...childProps} />
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {renderError(error)}
+    </FormControl>
+  );
+};
