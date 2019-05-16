@@ -43,6 +43,7 @@
     "lodash-es": "^4.17.11",
     "react-is": "^16.8.1",
     "react-transition-group": "^2.6.0",
+    "scheduler": "0.14.0",
     "sortablejs": "^1.7.0",
     "tinycolor2": "^1.4.1",
     "tslib": "^1.9.3",
