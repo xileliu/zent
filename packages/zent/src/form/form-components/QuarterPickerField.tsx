@@ -4,16 +4,13 @@ import QuarterPicker, {
   IQuarterPickerProps,
   QuarterPickerValue,
 } from '../../datetimepicker/QuarterPicker';
-import { FormControl } from '../Control';
 import {
   useField,
   IFormFieldCommonProps,
   noopMapEventToValue,
-  defaultRenderError,
   IFormComponentCommonProps,
+  renderField,
 } from '../shared';
-import { FormDescription } from '../Description';
-import { FormNotice } from '../Notice';
 
 export interface IFormQuarterPickerFieldProps
   extends IFormComponentCommonProps<
@@ -29,29 +26,10 @@ export const FormQuarterPickerField: React.FunctionComponent<
     QuarterPickerValue,
     IQuarterPickerProps
   >(props, [], noopMapEventToValue);
-  const {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    props: otherProps,
-  } = props;
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <QuarterPicker {...otherProps} {...childProps} />
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {renderError(error)}
-    </FormControl>
+  return renderField(
+    props,
+    error,
+    ref,
+    <QuarterPicker {...props.props} {...childProps} />
   );
 };

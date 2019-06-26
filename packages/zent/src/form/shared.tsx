@@ -5,11 +5,14 @@ import {
   useField as superUseField,
   IValidator,
   IMaybeError,
+  IValidateResult,
 } from 'formulr';
 import { useRef, useMemo, ReactNode, RefObject } from 'react';
 import { useScrollAnchor } from './scroll';
 import { FormError } from './Error';
-import { IFormControlProps } from './Control';
+import { IFormControlProps, FormControl } from './Control';
+import { FormNotice } from './Notice';
+import { FormDescription } from './Description';
 
 export function noopMapEventToValue<T>(e: T) {
   return e;
@@ -41,6 +44,7 @@ export interface IFormComponentCommonProps<Value, Props>
   scrollerRef?: RefObject<HTMLElement>;
   props?: Partial<Props>;
   defaultValue?: Value;
+  withoutError?: boolean;
 }
 
 export type IFormFieldCommonProps<Value> = IFormFieldModelProps<Value>;
@@ -157,4 +161,36 @@ export function defaultRenderError<T>(error: IMaybeError<T>) {
     return null;
   }
   return <FormError>{error.message}</FormError>;
+}
+
+export function renderField<T, Props>(
+  {
+    className,
+    style,
+    label,
+    renderError = defaultRenderError,
+    required,
+    helpDesc,
+    notice,
+    withoutError,
+  }: IFormComponentCommonProps<T, Props> & IFormFieldCommonProps<T>,
+  error: IValidateResult<T>,
+  ref: RefObject<any>,
+  children: ReactNode
+) {
+  return (
+    <FormControl
+      ref={ref as any}
+      className={className}
+      style={style}
+      label={label}
+      required={required}
+      invalid={!!error}
+    >
+      {children}
+      {!!notice && <FormNotice>{notice}</FormNotice>}
+      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
+      {withoutError ? null : renderError(error)}
+    </FormControl>
+  );
 }

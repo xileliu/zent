@@ -1,16 +1,13 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
 import ColorPicker, { IColorPickerProps } from '../../colorpicker';
-import { FormControl } from '../Control';
 import {
   useField,
   IFormFieldCommonProps,
   noopMapEventToValue,
-  defaultRenderError,
   IFormComponentCommonProps,
+  renderField,
 } from '../shared';
-import { FormDescription } from '../Description';
-import { FormNotice } from '../Notice';
 
 export interface IFormColorPickerFieldProps
   extends IFormComponentCommonProps<string, Omit<IColorPickerProps, 'color'>> {}
@@ -23,29 +20,10 @@ export const FormColorPickerField: React.FunctionComponent<
     string,
     IColorPickerProps
   >(props, '', noopMapEventToValue);
-  const {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    props: otherProps,
-  } = props;
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <ColorPicker {...otherProps} {...passedProps} color={value} />
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {renderError(error)}
-    </FormControl>
+  return renderField(
+    props,
+    error,
+    ref,
+    <ColorPicker {...props.props} {...passedProps} color={value} />
   );
 };

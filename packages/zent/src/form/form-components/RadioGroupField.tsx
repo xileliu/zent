@@ -5,12 +5,9 @@ import { IRadioGroupProps, RadioGroup, IRadioEvent } from '../../radio';
 import {
   IFormFieldCommonProps,
   useField,
-  defaultRenderError,
   IFormComponentCommonProps,
+  renderField,
 } from '../shared';
-import { FormControl } from '../Control';
-import { FormNotice } from '../Notice';
-import { FormDescription } from '../Description';
 
 export interface IFormRadioGroupFieldProps<T>
   extends IFormComponentCommonProps<T, Omit<IRadioGroupProps, 'value'>> {
@@ -25,32 +22,12 @@ export function FormRadioGroupField<T>(
   props: IFormRadioGroupFieldProps<T> & IFormFieldCommonProps<T>
 ) {
   const [childProps, { error }, ref] = useField(props, '', mapRadioEvent);
-  const {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    children,
-    props: otherProps,
-  } = props;
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <RadioGroup {...otherProps} {...childProps}>
-        {children}
-      </RadioGroup>
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {renderError(error)}
-    </FormControl>
+  return renderField(
+    props,
+    error,
+    ref,
+    <RadioGroup {...props.props} {...childProps}>
+      {props.children}
+    </RadioGroup>
   );
 }

@@ -10,10 +10,14 @@ export interface IFormControlProps {
   children?: React.ReactNode;
   required?: boolean;
   invalid?: boolean;
+  withoutLabel?: boolean;
 }
 
 export const FormControl = React.forwardRef<HTMLDivElement, IFormControlProps>(
-  ({ className, style, label, children, required, invalid }, ref) => {
+  (
+    { className, style, label, children, required, invalid, withoutLabel },
+    ref
+  ) => {
     return (
       <div
         ref={ref}
@@ -26,7 +30,7 @@ export const FormControl = React.forwardRef<HTMLDivElement, IFormControlProps>(
         )}
         style={style}
       >
-        <Label required={required}>{label}</Label>
+        {withoutLabel ? null : <Label required={required}>{label}</Label>}
         <div className="zent-form-control-content">{children}</div>
       </div>
     );

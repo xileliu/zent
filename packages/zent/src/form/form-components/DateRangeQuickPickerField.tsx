@@ -5,17 +5,14 @@ import DateRangeQuickPicker, {
   // DateRangeQuickPickerPresetValue,
   IDateRangeQuickPickerProps,
 } from '../../date-range-quick-picker';
-import { FormControl } from '../Control';
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
   useField,
   IFormFieldCommonProps,
   noopMapEventToValue,
-  defaultRenderError,
   IFormComponentCommonProps,
+  renderField,
 } from '../shared';
-import { FormDescription } from '../Description';
-import { FormNotice } from '../Notice';
 
 export interface IFormDateRangeQuickPickerFieldProps
   extends IFormComponentCommonProps<
@@ -67,29 +64,10 @@ export const FormDateRangeQuickPickerField: React.FunctionComponent<
     DatePickers.RangeValue,
     IDateRangeQuickPickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  const {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    props: otherProps,
-  } = props;
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <DateRangeQuickPicker {...otherProps} {...childProps} />
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {renderError(error)}
-    </FormControl>
+  return renderField(
+    props,
+    error,
+    ref,
+    <DateRangeQuickPicker {...props.props} {...childProps} />
   );
 };

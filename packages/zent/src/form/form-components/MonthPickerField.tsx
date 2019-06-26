@@ -3,18 +3,15 @@ import { Omit } from 'utility-types';
 import MonthPicker, {
   IMonthPickerProps,
 } from '../../datetimepicker/MonthPicker';
-import { FormControl } from '../Control';
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
   IFormFieldCommonProps,
   useField,
   noopMapEventToValue,
   dateDefaultValueFactory,
-  defaultRenderError,
   IFormComponentCommonProps,
+  renderField,
 } from '../shared';
-import { FormDescription } from '../Description';
-import { FormNotice } from '../Notice';
 
 export interface IFormMonthPickerFieldProps
   extends IFormComponentCommonProps<
@@ -30,29 +27,10 @@ export const FormMonthPickerField: React.FunctionComponent<
     DatePickers.Value,
     IMonthPickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  const {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    props: otherProps,
-  } = props;
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <MonthPicker {...otherProps} {...childProps} />
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {renderError(error)}
-    </FormControl>
+  return renderField(
+    props,
+    error,
+    ref,
+    <MonthPicker {...props.props} {...childProps} />
   );
 };
