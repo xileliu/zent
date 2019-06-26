@@ -16,6 +16,7 @@ import {
   form,
 } from 'formulr';
 import { IZentFormContext, FormContext } from './context';
+import { FieldSetValue } from 'formulr/esm/utils';
 
 export interface IFormProps<T extends object = any>
   extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -28,9 +29,9 @@ function preventDefault(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
 }
 
-export class ZentForm<T extends object> implements IForm {
+export class ZentForm<T> implements IForm<T> {
   constructor(
-    readonly inner: IForm,
+    readonly inner: IForm<T>,
     readonly zentFormContext: IZentFormContext
   ) {}
 
@@ -47,7 +48,7 @@ export class ZentForm<T extends object> implements IForm {
   }
 
   isValid() {
-    return this.inner.model.isValid();
+    return this.inner.model.valid();
   }
 
   isValidating() {
@@ -58,16 +59,16 @@ export class ZentForm<T extends object> implements IForm {
     return this.inner.model.getRawValue();
   }
 
-  initialize(value: T) {
+  initialize(value: FieldSetValue<T>) {
     this.inner.model.initialize(value);
   }
 
-  patchValue(value: T) {
+  patchValue(value: FieldSetValue<T>) {
     this.inner.model.patchValue(value);
   }
 
   resetValue() {
-    this.inner.model.resetValue();
+    this.inner.model.reset();
   }
 
   prepareSubmit(scrollToError = true): boolean {
@@ -85,7 +86,7 @@ export class ZentForm<T extends object> implements IForm {
       const { children } = this.zentFormContext;
       for (let i = 0; i < children.length; i += 1) {
         const child = children[i];
-        if (!child.isValid()) {
+        if (!child.valid()) {
           child.scrollTo();
         }
       }

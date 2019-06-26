@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 export interface IFormChild {
-  isValid(): boolean;
+  valid(): boolean;
   scrollTo(): void;
 }
 

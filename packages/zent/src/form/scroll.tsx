@@ -10,8 +10,8 @@ class ScrollAnchor implements IFormChild {
     public scrollerRef: RefObject<HTMLElement | undefined>
   ) {}
 
-  isValid() {
-    return this.model.isValid();
+  valid() {
+    return this.model.valid();
   }
 
   scrollTo() {
