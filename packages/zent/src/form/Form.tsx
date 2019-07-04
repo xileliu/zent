@@ -148,6 +148,7 @@ export class Form<T extends object = any> extends React.Component<
       form,
       onSubmit,
       disabled = false,
+      scrollToError,
       ...props
     } = this.props;
     const ctx = this.getContext(disabled, this.children);
