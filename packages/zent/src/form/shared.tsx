@@ -5,14 +5,14 @@ import {
   useField as superUseField,
   IValidator,
   IMaybeError,
-  IValidateResult,
+  BasicModel,
 } from 'formulr';
 import { useRef, useMemo, ReactNode, RefObject } from 'react';
-import { useScrollAnchor } from './scroll';
 import { FormError } from './Error';
 import { IFormControlProps, FormControl } from './Control';
 import { FormNotice } from './Notice';
 import { FormDescription } from './Description';
+import { useFormContext, IFormChild } from './context';
 
 export function noopMapEventToValue<T>(e: T) {
   return e;
@@ -41,7 +41,6 @@ export interface IFormComponentCommonProps<Value, Props>
   renderError?: IRenderError<Value>;
   helpDesc?: ReactNode;
   notice?: ReactNode;
-  scrollerRef?: RefObject<HTMLElement>;
   props?: Partial<Props>;
   defaultValue?: Value;
   withoutError?: boolean;
@@ -63,7 +62,6 @@ export interface IFormFieldSharedProps<Value, Props> {
   defaultValue: Value | (() => Value);
   name: string;
   model: FieldModel<Value>;
-  scrollerRef?: RefObject<HTMLElement>;
   validators?: Array<IValidator<Value>>;
 }
 
@@ -115,7 +113,7 @@ export function useField<
   const propsRef = useRef<Partial<Props>>(props.props || {});
   propsRef.current = props.props || {};
   const anchorRef = useRef<Element>();
-  useScrollAnchor(model, anchorRef, props.scrollerRef);
+  asFormChild(model as BasicModel<unknown>, anchorRef);
   const proxy = useMemo<IZentFormChildProps<Value, ChangeEvent>>(
     () => ({
       value: childProps.value,
@@ -174,7 +172,7 @@ export function renderField<T, Props>(
     notice,
     withoutError,
   }: IFormComponentCommonProps<T, Props> & IFormFieldCommonProps<T>,
-  error: IValidateResult<T>,
+  error: IMaybeError<T>,
   ref: RefObject<any>,
   children: ReactNode
 ) {
@@ -193,4 +191,35 @@ export function renderField<T, Props>(
       {withoutError ? null : renderError(error)}
     </FormControl>
   );
+}
+
+export function asFormChild(
+  model: BasicModel<unknown>,
+  scrollAnchorRef?: RefObject<Element | null | undefined>
+) {
+  const ctx = useFormContext();
+  const posRef = useRef(ctx.children.length);
+  React.useEffect(() => {
+    const formChild: IFormChild = {
+      valid() {
+        return model.valid();
+      },
+      getDOMNode() {
+        return scrollAnchorRef && scrollAnchorRef.current;
+      },
+    };
+    if (posRef.current < ctx.children.length) {
+      ctx.children.splice(posRef.current, 0, formChild);
+    } else {
+      posRef.current = ctx.children.length;
+      ctx.children.push(formChild);
+    }
+    return () => {
+      const pos = ctx.children.indexOf(formChild);
+      if (pos !== -1) {
+        posRef.current = pos;
+        ctx.children.splice(pos, 1);
+      }
+    };
+  }, [model, scrollAnchorRef, ctx]);
 }

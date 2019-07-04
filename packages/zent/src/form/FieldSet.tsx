@@ -3,14 +3,20 @@ import {
   IFormFieldModelDrivenProps,
   IRenderError,
   defaultRenderError,
+  asFormChild,
 } from './shared';
 import { FieldSetModel } from '.';
-import { IValidator, useFieldSet, FormProvider, useValue$ } from 'formulr';
-import { useScrollAnchor } from './scroll';
+import {
+  IValidator,
+  useFieldSet,
+  FormProvider,
+  useValue$,
+  BasicModel,
+  IMaybeError,
+} from 'formulr';
 
 export interface IFieldSetProps<T extends object> {
   scrollAnchorRef?: React.RefObject<Element>;
-  scrollerRef?: React.RefObject<HTMLElement>;
   validators?: Array<IValidator<T>>;
   children?: React.ReactNode;
   renderError?: IRenderError<T>;
@@ -24,17 +30,13 @@ export function FieldSet<T extends object>(
     (props as any).name || (props as any).model,
     props.validators
   );
-  const {
-    scrollAnchorRef,
-    scrollerRef,
-    renderError = defaultRenderError,
-  } = props;
-  useScrollAnchor(model, scrollAnchorRef, scrollerRef);
+  const { scrollAnchorRef, renderError = defaultRenderError } = props;
+  asFormChild(model as BasicModel<unknown>, scrollAnchorRef);
   useValue$(model.error$, model.error$.getValue());
   return (
     <FormProvider value={ctx}>
       {props.children}
-      {renderError(model.error)}
+      {renderError(model.error as IMaybeError<any>)}
     </FormProvider>
   );
 }

@@ -9,8 +9,6 @@ import {
   FormModel,
 } from 'formulr';
 
-import { IFormChild } from './context';
-
 export interface IFormEventMap {
   submit: React.SyntheticEvent | undefined;
   'submit-start': void;
@@ -72,9 +70,6 @@ export interface IFormEvents {
 
 export class ZentForm<T> implements IForm<T> {
   events: IFormEvents = new Events();
-
-  /** @internal */
-  children: IFormChild[] = [];
 
   /** @internal */
   constructor(

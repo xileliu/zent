@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 export interface IFormChild {
   valid(): boolean;
-  getDOMNOde(): Element | null;
+  getDOMNode(): Element | null | undefined;
 }
 
 export interface IZentFormContext {
