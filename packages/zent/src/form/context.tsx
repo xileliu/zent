@@ -2,12 +2,12 @@ import { createContext, useContext } from 'react';
 
 export interface IFormChild {
   valid(): boolean;
-  scrollTo(): void;
+  getDOMNOde(): Element | null;
 }
 
 export interface IZentFormContext {
   children: IFormChild[];
-  scrollerRef?: React.RefObject<HTMLElement>;
+  disabled: boolean;
 }
 
 export const FormContext = createContext<IZentFormContext | null>(null);
