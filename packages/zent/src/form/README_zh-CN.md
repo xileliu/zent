@@ -74,6 +74,7 @@ function validate<T>(
 - 支持返回`Promise`或`Observable`进行异步校验
 
 <!-- demo-slot-4 -->
+<!-- demo-slot-5 -->
 
 ### 其他
 
@@ -81,12 +82,12 @@ function validate<T>(
 
 `Form` 组件使用`flex`布局，提供两种简单的样式：水平布局 `horizontal`， 垂直布局 `vertical`。
 
-<!-- demo-slot-5 -->
+<!-- demo-slot-6 -->
 
 #### `Field Array`
 
-<!-- demo-slot-6 -->
+<!-- demo-slot-7 -->
 
 ### 从 Model 构建表单
 
-<!-- demo-slot-7 -->
+<!-- demo-slot-8 -->
