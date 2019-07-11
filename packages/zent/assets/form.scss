@@ -64,6 +64,12 @@
     display: flex;
     line-height: 30px;
     margin-bottom: 20px;
+
+    &-content {
+      &-inner {
+        display: flex;
+      }
+    }
   }
 
   &-vertical {

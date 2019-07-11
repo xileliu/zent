@@ -44,6 +44,8 @@ export interface IFormComponentCommonProps<Value, Props>
   props?: Partial<Props>;
   defaultValue?: Value;
   withoutError?: boolean;
+  before?: ReactNode;
+  after?: ReactNode;
 }
 
 export type IFormFieldCommonProps<Value> = IFormFieldModelProps<Value>;
@@ -171,6 +173,8 @@ export function renderField<T, Props>(
     helpDesc,
     notice,
     withoutError,
+    before,
+    after,
   }: IFormComponentCommonProps<T, Props> & IFormFieldCommonProps<T>,
   error: IMaybeError<T>,
   ref: RefObject<any>,
@@ -185,7 +189,11 @@ export function renderField<T, Props>(
       required={required}
       invalid={!!error}
     >
-      {children}
+      <div className="zent-form-control-content-inner">
+        {before}
+        {children}
+        {after}
+      </div>
       {!!notice && <FormNotice>{notice}</FormNotice>}
       {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
       {withoutError ? null : renderError(error)}
