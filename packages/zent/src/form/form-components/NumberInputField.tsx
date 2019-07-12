@@ -4,27 +4,26 @@ import { Omit } from 'utility-types';
 import NumberInput, { INumberInputProps } from '../../number-input';
 import {
   useField,
-  IFormFieldCommonProps,
   noopMapEventToValue,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormNumberInputFieldProps
   extends IFormComponentCommonProps<string, Omit<INumberInputProps, 'value'>> {}
 
 export const FormNumberInputField: React.FunctionComponent<
-  IFormNumberInputFieldProps & IFormFieldCommonProps<string>
+  IFormNumberInputFieldProps & IFormFieldModelProps<string>
 > = props => {
   const [childProps, { error }, ref] = useField<
     string,
     string,
     INumberInputProps
   >(props, '', noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <NumberInput {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <NumberInput {...props.props} {...childProps} />
+    </FormField>
   );
 };

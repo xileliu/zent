@@ -8,11 +8,11 @@ import DateRangeQuickPicker, {
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
   useField,
-  IFormFieldCommonProps,
   noopMapEventToValue,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormDateRangeQuickPickerFieldProps
   extends IFormComponentCommonProps<
@@ -57,17 +57,16 @@ function dateDefaultValueFactory(): DatePickers.RangeValue {
 
 export const FormDateRangeQuickPickerField: React.FunctionComponent<
   IFormDateRangeQuickPickerFieldProps &
-    IFormFieldCommonProps<DatePickers.RangeValue>
+    IFormFieldModelProps<DatePickers.RangeValue>
 > = props => {
   const [childProps, { error }, ref] = useField<
     DatePickers.RangeValue,
     DatePickers.RangeValue,
     IDateRangeQuickPickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <DateRangeQuickPicker {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <DateRangeQuickPicker {...props.props} {...childProps} />
+    </FormField>
   );
 };

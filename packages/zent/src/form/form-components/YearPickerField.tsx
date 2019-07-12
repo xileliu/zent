@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
 import {
-  IFormFieldCommonProps,
   useField,
   noopMapEventToValue,
   dateDefaultValueFactory,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
 import YearPicker, { IYearPickerProps } from '../../datetimepicker/YearPicker';
 import { DatePickers } from '../../datetimepicker/common/types';
+import { FormField } from '../Field';
 
 export interface IFormYearPickerFieldProps
   extends IFormComponentCommonProps<
@@ -18,17 +18,16 @@ export interface IFormYearPickerFieldProps
   > {}
 
 export const FormYearPickerField: React.FunctionComponent<
-  IFormYearPickerFieldProps & IFormFieldCommonProps<DatePickers.Value>
+  IFormYearPickerFieldProps & IFormFieldModelProps<DatePickers.Value>
 > = props => {
   const [childProps, { error }, ref] = useField<
     DatePickers.Value,
     DatePickers.Value,
     IYearPickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <YearPicker {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <YearPicker {...props.props} {...childProps} />
+    </FormField>
   );
 };

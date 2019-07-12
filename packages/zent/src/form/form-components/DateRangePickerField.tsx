@@ -3,14 +3,14 @@ import { Omit } from 'utility-types';
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
   useField,
-  IFormFieldCommonProps,
   noopMapEventToValue,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
 import DateRangePicker, {
   IDateRangePickerProps,
 } from '../../datetimepicker/DateRangePicker';
+import { FormField } from '../Field';
 
 export interface IFormDateRangePickerFieldProps
   extends IFormComponentCommonProps<
@@ -23,17 +23,16 @@ function dateDefaultValueFactory(): DatePickers.RangeValue {
 }
 
 export const FormDateRangePickerField: React.FunctionComponent<
-  IFormDateRangePickerFieldProps & IFormFieldCommonProps<DatePickers.RangeValue>
+  IFormDateRangePickerFieldProps & IFormFieldModelProps<DatePickers.RangeValue>
 > = props => {
   const [childProps, { error }, ref] = useField<
     DatePickers.RangeValue,
     DatePickers.RangeValue,
     IDateRangePickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <DateRangePicker {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <DateRangePicker {...props.props} {...childProps} />
+    </FormField>
   );
 };

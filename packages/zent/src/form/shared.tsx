@@ -7,11 +7,10 @@ import {
   IMaybeError,
   BasicModel,
 } from 'formulr';
+import { Omit } from 'utility-types';
 import { useRef, useMemo, ReactNode, RefObject } from 'react';
 import { FormError } from './Error';
-import { IFormControlProps, FormControl } from './Control';
-import { FormNotice } from './Notice';
-import { FormDescription } from './Description';
+import { IFormControlProps } from './Control';
 import { useFormContext, IFormChild } from './context';
 
 export function noopMapEventToValue<T>(e: T) {
@@ -36,19 +35,21 @@ export type IFormFieldModelProps<T> =
   | IFormFieldViewDrivenProps<T>
   | IFormFieldModelDrivenProps<T>;
 
-export interface IFormComponentCommonProps<Value, Props>
-  extends IFormControlProps {
+export interface IFormFieldProps<Value> extends IFormControlProps {
   renderError?: IRenderError<Value>;
   helpDesc?: ReactNode;
   notice?: ReactNode;
-  props?: Partial<Props>;
-  defaultValue?: Value;
   withoutError?: boolean;
   before?: ReactNode;
   after?: ReactNode;
+  error?: IMaybeError<Value>;
 }
 
-export type IFormFieldCommonProps<Value> = IFormFieldModelProps<Value>;
+export interface IFormComponentCommonProps<Value, Props>
+  extends Omit<IFormFieldProps<Value>, 'error'> {
+  defaultValue?: Value;
+  props?: Partial<Props>;
+}
 
 export interface IZentFormChildProps<Value, ChangeEvent> {
   value: Value;
@@ -70,7 +71,7 @@ export interface IFormFieldSharedProps<Value, Props> {
 export type IZentUseField<Value, Event> = [
   IZentFormChildProps<Value, Event>,
   FieldModel<Value>,
-  RefObject<Element | undefined>
+  RefObject<HTMLDivElement>
 ];
 
 function mapDefaultValue<Value, Event>(
@@ -114,7 +115,7 @@ export function useField<
   const [childProps, model] = field;
   const propsRef = useRef<Partial<Props>>(props.props || {});
   propsRef.current = props.props || {};
-  const anchorRef = useRef<Element>();
+  const anchorRef = useRef<HTMLDivElement>();
   asFormChild(model as BasicModel<unknown>, anchorRef);
   const proxy = useMemo<IZentFormChildProps<Value, ChangeEvent>>(
     () => ({
@@ -161,44 +162,6 @@ export function defaultRenderError<T>(error: IMaybeError<T>) {
     return null;
   }
   return <FormError>{error.message}</FormError>;
-}
-
-export function renderField<T, Props>(
-  {
-    className,
-    style,
-    label,
-    renderError = defaultRenderError,
-    required,
-    helpDesc,
-    notice,
-    withoutError,
-    before,
-    after,
-  }: IFormComponentCommonProps<T, Props> & IFormFieldCommonProps<T>,
-  error: IMaybeError<T>,
-  ref: RefObject<any>,
-  children: ReactNode
-) {
-  return (
-    <FormControl
-      ref={ref as any}
-      className={className}
-      style={style}
-      label={label}
-      required={required}
-      invalid={!!error}
-    >
-      <div className="zent-form-control-content-inner">
-        {before}
-        {children}
-        {after}
-      </div>
-      {!!notice && <FormNotice>{notice}</FormNotice>}
-      {!!helpDesc && <FormDescription>{helpDesc}</FormDescription>}
-      {withoutError ? null : renderError(error)}
-    </FormControl>
-  );
 }
 
 export function asFormChild(

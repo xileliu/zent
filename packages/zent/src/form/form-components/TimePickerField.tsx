@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Omit } from 'utility-types';
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
-  IFormFieldCommonProps,
   useField,
   noopMapEventToValue,
   dateDefaultValueFactory,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
 import TimePicker, { ITimePickerProps } from '../../datetimepicker/TimePicker';
+import { FormField } from '../Field';
 
 export interface IFormTimePickerField
   extends IFormComponentCommonProps<
@@ -18,17 +18,16 @@ export interface IFormTimePickerField
   > {}
 
 export const FormTimePickerField: React.FunctionComponent<
-  IFormTimePickerField & IFormFieldCommonProps<DatePickers.Value>
+  IFormTimePickerField & IFormFieldModelProps<DatePickers.Value>
 > = props => {
   const [childProps, { error }, ref] = useField<
     DatePickers.Value,
     DatePickers.Value,
     ITimePickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <TimePicker {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <TimePicker {...props.props} {...childProps} />
+    </FormField>
   );
 };

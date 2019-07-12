@@ -6,8 +6,8 @@ import {
   useField,
   IFormFieldModelProps,
   IFormComponentCommonProps,
-  renderField,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormInputFieldProps
   extends IFormComponentCommonProps<
@@ -29,10 +29,9 @@ export const FormInputField: React.FunctionComponent<
     '',
     mapInputEventToValue
   );
-  return renderField(
-    props,
-    error,
-    ref,
-    <Input {...props.props as any} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <Input {...props.props as any} {...childProps} />
+    </FormField>
   );
 };

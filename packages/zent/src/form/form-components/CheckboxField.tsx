@@ -5,8 +5,8 @@ import {
   useField,
   IFormComponentCommonProps,
   IFormFieldModelProps,
-  renderField,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormCheckboxFieldProps
   extends IFormComponentCommonProps<boolean, Omit<ICheckboxProps, 'checked'>> {}
@@ -23,10 +23,9 @@ export const FormCheckboxField = (
     false,
     mapCheckboxEventToValue
   );
-  return renderField(
-    props,
-    error,
-    ref,
-    <Checkbox {...props.props} {...passedProps} checked={value} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <Checkbox {...props.props} {...passedProps} checked={value} />
+    </FormField>
   );
 };

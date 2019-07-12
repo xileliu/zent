@@ -3,11 +3,11 @@ import { Omit } from 'utility-types';
 
 import { IRadioGroupProps, RadioGroup, IRadioEvent } from '../../radio';
 import {
-  IFormFieldCommonProps,
   useField,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormRadioGroupFieldProps<T>
   extends IFormComponentCommonProps<T, Omit<IRadioGroupProps, 'value'>> {
@@ -19,15 +19,14 @@ function mapRadioEvent(e: IRadioEvent) {
 }
 
 export function FormRadioGroupField<T>(
-  props: IFormRadioGroupFieldProps<T> & IFormFieldCommonProps<T>
+  props: IFormRadioGroupFieldProps<T> & IFormFieldModelProps<T>
 ) {
   const [childProps, { error }, ref] = useField(props, '', mapRadioEvent);
-  return renderField(
-    props,
-    error,
-    ref,
-    <RadioGroup {...props.props} {...childProps}>
-      {props.children}
-    </RadioGroup>
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <RadioGroup {...props.props} {...childProps}>
+        {props.children}
+      </RadioGroup>
+    </FormField>
   );
 }

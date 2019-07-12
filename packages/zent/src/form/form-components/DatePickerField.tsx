@@ -3,13 +3,13 @@ import { Omit } from 'utility-types';
 import DatePicker, { IDatePickerProps } from '../../datetimepicker/DatePicker';
 import { DatePickers } from '../../datetimepicker/common/types';
 import {
-  IFormFieldCommonProps,
   useField,
   noopMapEventToValue,
   dateDefaultValueFactory,
   IFormComponentCommonProps,
-  renderField,
+  IFormFieldModelProps,
 } from '../shared';
+import { FormField } from '../Field';
 
 export interface IFormDatePickerField
   extends IFormComponentCommonProps<
@@ -18,17 +18,16 @@ export interface IFormDatePickerField
   > {}
 
 export const FormDatePickerField: React.FunctionComponent<
-  IFormDatePickerField & IFormFieldCommonProps<DatePickers.Value>
+  IFormDatePickerField & IFormFieldModelProps<DatePickers.Value>
 > = props => {
   const [childProps, { error }, ref] = useField<
     DatePickers.Value,
     DatePickers.Value,
     IDatePickerProps
   >(props, dateDefaultValueFactory, noopMapEventToValue);
-  return renderField(
-    props,
-    error,
-    ref,
-    <DatePicker {...props.props} {...childProps} />
+  return (
+    <FormField ref={ref} {...props} error={error}>
+      <DatePicker {...props.props} {...childProps} />
+    </FormField>
   );
 };
