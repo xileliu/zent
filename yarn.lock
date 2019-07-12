@@ -5052,10 +5052,10 @@ format@^0.2.2:
   resolved "https://registry.yarnpkg.com/format/-/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
   integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
 
-formulr@0.2.0-beta.21:
-  version "0.2.0-beta.21"
-  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.21.tgz#e465ba80bd9d366de64efffca788531bdbb6035e"
-  integrity sha512-16YdVo1lE0xUNn+DhwRgu+pEAorSJq6duZtelOW+il7G7rohmHlyk1CMSxwPdA5ZdGP2Ml+HTETuH3EOWjaBTQ==
+formulr@0.2.0-beta.22:
+  version "0.2.0-beta.22"
+  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.22.tgz#9f2e065dc5a6ced7543b8d2b25b0e554fee98e21"
+  integrity sha512-I4kzjFRvPC8bptNvWLSRLTWQjXv+1xTvM+0KB1djKSK5bmh70UphxOSycZwU124jaZ1lYMDMMd6bNLO3EM5wrQ==
   dependencies:
     "@types/big.js" "^4.0.5"
     "@types/react" "^16.8.0"
@@ -7328,6 +7328,11 @@ kew@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/kew/-/kew-0.7.0.tgz#79d93d2d33363d6fdd2970b335d9141ad591d79b"
   integrity sha1-edk9LTM2PW/dKXCzNdkUGtWR15s=
+
+keycode@^2.1.9:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
+  integrity sha1-PQr1bce4uOXLqNCpfxByBO7CKwQ=
 
 killable@^1.0.1:
   version "1.0.1"
