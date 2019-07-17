@@ -31,7 +31,7 @@ export const FormInputField: React.FunctionComponent<
   IFormInputFieldProps
 > = props => {
   return (
-    <FormField {...props}>
+    <FormField {...props} defaultValue={props.defaultValue || ''}>
       {childProps => renderInput(childProps, props)}
     </FormField>
   );

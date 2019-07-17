@@ -24,7 +24,7 @@ export type IFormFieldModelProps<T> =
   | IFormFieldModelDrivenProps<T>;
 
 export interface IFormFieldPropsBase<Value>
-  extends Omit<IFormControlProps, 'required'> {
+  extends Omit<IFormControlProps, 'required' | 'invalid'> {
   renderError?: IRenderError<Value>;
   helpDesc?: React.ReactNode;
   notice?: React.ReactNode;
@@ -43,7 +43,10 @@ export type IFormComponentProps<Value, Props> = Omit<
   'children'
 > & {
   props?: Props;
-} & IFormFieldModelProps<Value>;
+  defaultValue?: Value | (() => Value);
+} & (
+    | Omit<IFormFieldViewDrivenProps<Value>, 'defaultValue'>
+    | IFormFieldModelDrivenProps<Value>);
 
 export function dateDefaultValueFactory() {
   return new Date();

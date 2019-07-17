@@ -22,11 +22,13 @@ function renderCheckboxGroup<T>(
   );
 }
 
+const DEFAULT_VALUE = [] as any[];
+
 export function FormCheckboxGroupField<T>(
   props: IFormCheckboxGroupFieldProps<T>
 ) {
   return (
-    <FormField {...props}>
+    <FormField {...props} defaultValue={props.defaultValue || DEFAULT_VALUE}>
       {childProps => renderCheckboxGroup(childProps, props)}
     </FormField>
   );

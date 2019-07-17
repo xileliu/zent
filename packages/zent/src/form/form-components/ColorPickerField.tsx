@@ -21,7 +21,7 @@ export const FormColorPickerField: React.FunctionComponent<
   IFormColorPickerFieldProps
 > = props => {
   return (
-    <FormField {...props}>
+    <FormField {...props} defaultValue={props.defaultValue || ''}>
       {childProps => renderColorPicker(childProps, props)}
     </FormField>
   );
