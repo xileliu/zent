@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FieldModel, IValidator, IMaybeError, BasicModel } from 'formulr';
 import { useRef, ReactNode, RefObject } from 'react';
+import { Omit } from 'utility-types';
 import { FormError } from './Error';
 import { IFormControlProps } from './Control';
 import { useFormContext, IFormChild } from './context';
@@ -33,6 +34,8 @@ export interface IFormFieldPropsBase<Value>
   before?: React.ReactNode;
   after?: React.ReactNode;
   required?: boolean | string;
+  normalize?: (value: Value, prevValue: Value) => Value;
+  format?: (value: Value) => Value;
   children(props: IFormFieldChildProps<Value>): React.ReactNode;
 }
 

@@ -33,6 +33,8 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       ((props as unknown) as IFormFieldModelDrivenProps<Value>).model
     );
   }
+  const propsRef = React.useRef(props);
+  propsRef.current = props;
   const [childProps, model] = field;
   const {
     className,
@@ -49,6 +51,20 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
   } = props;
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   asFormChild(model as BasicModel<unknown>, anchorRef);
+  const proxiedProps = React.useMemo(
+    () => ({
+      ...childProps,
+      onChange(value: Value) {
+        const prevValue = model.value;
+        const nextValue = props.normalize
+          ? props.normalize(value, prevValue)
+          : value;
+        childProps.onChange(nextValue);
+      },
+    }),
+    []
+  );
+  proxiedProps.value = props.format ? props.format(model.value) : model.value;
   return (
     <FormControl
       ref={anchorRef}
@@ -60,7 +76,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
     >
       <div className="zent-form-control-content-inner">
         {before}
-        {children(childProps)}
+        {children(proxiedProps)}
         {after}
       </div>
       {!!notice && <FormNotice>{notice}</FormNotice>}
