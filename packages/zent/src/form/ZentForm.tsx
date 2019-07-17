@@ -140,28 +140,6 @@ export class ZentForm<T> implements IForm<T> {
       type: 'SUBMIT_STOP',
     });
   }
-
-  // prepareSubmit(scrollToError = true): boolean {
-  //   if (this.isValidating()) {
-  //     return false;
-  //   }
-  //   this.validate(
-  //     ValidateStrategy.IgnoreAsync | ValidateStrategy.IncludeUntouched
-  //   );
-  //   const isValid = this.isValid();
-  //   if (isValid) {
-  //     return true;
-  //   }
-  //   if (scrollToError) {
-  //     for (let i = 0; i < this.children.length; i += 1) {
-  //       const child = this.children[i];
-  //       if (!child.valid()) {
-  //         // child.scrollTo();
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
 }
 
 export function useForm<T>(arg: FormStrategy.View | (() => FormModel<T>)) {

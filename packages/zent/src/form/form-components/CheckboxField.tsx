@@ -1,31 +1,41 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
 import Checkbox, { ICheckboxProps, ICheckboxEvent } from '../../checkbox';
-import {
-  useField,
-  IFormComponentCommonProps,
-  IFormFieldModelProps,
-} from '../shared';
-import { FormField } from '../Field';
+import { IFormFieldModelProps } from '../shared';
+import { FormField, IFormFieldProps, IFormFieldChildProps } from '../Field';
 
 export interface IFormCheckboxFieldProps
-  extends IFormComponentCommonProps<boolean, Omit<ICheckboxProps, 'checked'>> {}
+  extends Omit<IFormFieldProps<boolean>, 'children'> {
+  props: Omit<ICheckboxProps, 'checked'>;
+}
 
-function mapCheckboxEventToValue(e: ICheckboxEvent): boolean {
-  return e.target.checked;
+function renderCheckbox(
+  childProps: IFormFieldChildProps<boolean>,
+  props: IFormCheckboxFieldProps & IFormFieldModelProps<boolean>
+) {
+  const { value, ...passedProps } = childProps;
+  const onChange = React.useCallback(
+    (e: ICheckboxEvent) => {
+      childProps.onChange(e.target.checked);
+    },
+    [childProps.onChange]
+  );
+  return (
+    <Checkbox
+      {...props.props}
+      {...passedProps}
+      checked={value}
+      onChange={onChange}
+    />
+  );
 }
 
 export const FormCheckboxField = (
   props: IFormCheckboxFieldProps & IFormFieldModelProps<boolean>
 ) => {
-  const [{ value, ...passedProps }, { error }, ref] = useField(
-    props,
-    false,
-    mapCheckboxEventToValue
-  );
   return (
-    <FormField ref={ref} {...props} error={error}>
-      <Checkbox {...props.props} {...passedProps} checked={value} />
+    <FormField {...props}>
+      {childProps => renderCheckbox(childProps, props)}
     </FormField>
   );
 };
