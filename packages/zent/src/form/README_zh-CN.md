@@ -92,8 +92,10 @@ function validate<T>(
 
 <!-- demo-slot-8 -->
 
-### CombineErrors
+#### CombineErrors
 
 将多个字段的错误聚合到一起。
 
 <!-- demo-slot-9 -->
+
+<!-- demo-slot-10 -->

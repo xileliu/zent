@@ -91,8 +91,10 @@ function validate<T>(
 
 <!-- demo-slot-8 -->
 
-### CombineErrors
+#### CombineErrors
 
 Combine error display from multiple fields.
 
 <!-- demo-slot-9 -->
+
+<!-- demo-slot-10 -->
