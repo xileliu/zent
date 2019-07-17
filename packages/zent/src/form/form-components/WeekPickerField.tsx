@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
-import {
-  IFormFieldModelProps,
-  IFormComponentProps,
-  dateRangeDefaultValueFactory,
-} from '../shared';
+import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 import WeekPicker, { IWeekPickerProps } from '../../datetimepicker/WeekPicker';
 import { DatePickers } from '../../datetimepicker/common/types';
 import { FormField } from '../Field';
@@ -15,7 +11,7 @@ export type IFormWeekPickerFieldProps = IFormComponentProps<
 >;
 
 export const FormWeekPickerField: React.FunctionComponent<
-  IFormWeekPickerFieldProps & IFormFieldModelProps<DatePickers.RangeValue>
+  IFormWeekPickerFieldProps
 > = props => {
   return (
     <FormField
