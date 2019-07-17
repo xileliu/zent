@@ -2,33 +2,25 @@ import * as React from 'react';
 import { Omit } from 'utility-types';
 import QuarterPicker, {
   IQuarterPickerProps,
-  QuarterPickerValue,
 } from '../../datetimepicker/QuarterPicker';
-import {
-  useField,
-  noopMapEventToValue,
-  IFormComponentCommonProps,
-  IFormFieldModelProps,
-} from '../shared';
+import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 import { FormField } from '../Field';
+import { DatePickers } from '../../datetimepicker/common/types';
 
-export interface IFormQuarterPickerFieldProps
-  extends IFormComponentCommonProps<
-    QuarterPickerValue,
-    Omit<IQuarterPickerProps, 'value'>
-  > {}
+export type IFormQuarterPickerFieldProps = IFormComponentProps<
+  DatePickers.RangeValue,
+  Omit<IQuarterPickerProps, 'value'>
+>;
 
 export const FormQuarterPickerField: React.FunctionComponent<
-  IFormQuarterPickerFieldProps & IFormFieldModelProps<QuarterPickerValue>
+  IFormQuarterPickerFieldProps
 > = props => {
-  const [childProps, { error }, ref] = useField<
-    QuarterPickerValue,
-    QuarterPickerValue,
-    IQuarterPickerProps
-  >(props, [], noopMapEventToValue);
   return (
-    <FormField ref={ref} {...props} error={error}>
-      <QuarterPicker {...props.props} {...childProps} />
+    <FormField
+      {...props}
+      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+    >
+      {childProps => <QuarterPicker {...props.props} {...childProps} />}
     </FormField>
   );
 };

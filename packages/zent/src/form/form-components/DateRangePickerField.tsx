@@ -5,23 +5,12 @@ import DateRangePicker, {
   IDateRangePickerProps,
 } from '../../datetimepicker/DateRangePicker';
 import { FormField } from '../Field';
-import { IFormComponentProps, IFormFieldChildProps } from '../shared';
+import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 
 export type IFormDateRangePickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
   Omit<IDateRangePickerProps, 'value'>
 >;
-
-function dateDefaultValueFactory(): DatePickers.RangeValue {
-  return [new Date(), new Date()];
-}
-
-function renderDateRangePicker(
-  childProps: IFormFieldChildProps<DatePickers.RangeValue>,
-  props: IFormDateRangePickerFieldProps
-) {
-  return <DateRangePicker {...props.props} {...childProps} />;
-}
 
 export const FormDateRangePickerField: React.FunctionComponent<
   IFormDateRangePickerFieldProps
@@ -29,9 +18,9 @@ export const FormDateRangePickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateDefaultValueFactory}
+      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
     >
-      {childProps => renderDateRangePicker(childProps, props)}
+      {childProps => <DateRangePicker {...props.props} {...childProps} />}
     </FormField>
   );
 };

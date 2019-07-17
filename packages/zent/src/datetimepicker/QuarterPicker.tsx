@@ -35,10 +35,11 @@ function getQuarterLastDay(
   return new (Date as any)(year, ...QUARTER_LAST_YEAR_MAP[quarter]);
 }
 
-export type QuarterPickerValue = [DatePickers.Value, DatePickers.Value] | [];
-
 export interface IQuarterPickerProps
-  extends Omit<DatePickers.ICommonProps<QuarterPickerValue>, 'disabledDate'> {
+  extends Omit<
+    DatePickers.ICommonProps<DatePickers.RangeValue>,
+    'disabledDate'
+  > {
   disabledDate?: (
     val: [DatePickers.Value, DatePickers.Value],
     type?: DatePickers.RangeType

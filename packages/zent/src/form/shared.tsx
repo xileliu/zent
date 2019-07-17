@@ -4,6 +4,7 @@ import { useRef, ReactNode, RefObject } from 'react';
 import { FormError } from './Error';
 import { IFormControlProps } from './Control';
 import { useFormContext, IFormChild } from './context';
+import { DatePickers } from '../datetimepicker/common/types';
 
 export interface IRenderError<T> {
   (error: IMaybeError<T>): ReactNode;
@@ -48,8 +49,12 @@ export type IFormComponentProps<Value, Props> = Omit<
     | Omit<IFormFieldViewDrivenProps<Value>, 'defaultValue'>
     | IFormFieldModelDrivenProps<Value>);
 
-export function dateDefaultValueFactory() {
+export function dateDefaultValueFactory(): DatePickers.Value {
   return new Date();
+}
+
+export function dateRangeDefaultValueFactory(): DatePickers.RangeValue {
+  return [new Date(), new Date()];
 }
 
 export function defaultRenderError<T>(error: IMaybeError<T>) {
