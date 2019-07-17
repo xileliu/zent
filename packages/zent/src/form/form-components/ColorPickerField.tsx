@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
 import ColorPicker, { IColorPickerProps } from '../../colorpicker';
-import {
-  useField,
-  noopMapEventToValue,
-  IFormComponentCommonProps,
-  IFormFieldModelProps,
-} from '../shared';
-import { FormField } from '../Field';
+import { FormField, IFormFieldChildProps } from '../Field';
+import { IFormComponentProps } from '../shared';
 
-export interface IFormColorPickerFieldProps
-  extends IFormComponentCommonProps<string, Omit<IColorPickerProps, 'color'>> {}
+export type IFormColorPickerFieldProps = IFormComponentProps<
+  string,
+  Omit<IColorPickerProps, 'color'>
+>;
+
+function renderColorPicker(
+  childProps: IFormFieldChildProps<string>,
+  props: IFormColorPickerFieldProps
+) {
+  const { value, ...passedProps } = childProps;
+  return <ColorPicker {...props.props} {...passedProps} color={value} />;
+}
 
 export const FormColorPickerField: React.FunctionComponent<
-  IFormColorPickerFieldProps & IFormFieldModelProps<string>
+  IFormColorPickerFieldProps
 > = props => {
-  const [{ value, ...passedProps }, { error }, ref] = useField<
-    string,
-    string,
-    IColorPickerProps
-  >(props, '', noopMapEventToValue);
   return (
-    <FormField ref={ref} {...props} error={error}>
-      <ColorPicker {...props.props} {...passedProps} color={value} />
+    <FormField {...props}>
+      {childProps => renderColorPicker(childProps, props)}
     </FormField>
   );
 };

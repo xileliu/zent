@@ -1,37 +1,17 @@
 import * as React from 'react';
 import { IUseField, useField, Validators, BasicModel } from 'formulr';
-import { Omit } from 'utility-types';
 import {
   defaultRenderError,
-  IRenderError,
+  IFormFieldProps,
   IFormFieldViewDrivenProps,
   IFormFieldModelDrivenProps,
   asFormChild,
 } from './shared';
-import { FormControl, IFormControlProps } from './Control';
+import { FormControl } from './Control';
 import { FormNotice } from './Notice';
 import { FormDescription } from './Description';
 
-export interface IFormFieldChildProps<Value> {
-  value: Value;
-  onChange(e: Value): void;
-  onFocus: React.FocusEventHandler;
-  onBlur: React.FocusEventHandler;
-  onCompositionStart: React.CompositionEventHandler;
-  onCompositionEnd: React.CompositionEventHandler;
-}
-
-export interface IFormFieldProps<Value>
-  extends Omit<IFormControlProps, 'required'> {
-  renderError?: IRenderError<Value>;
-  helpDesc?: React.ReactNode;
-  notice?: React.ReactNode;
-  withoutError?: boolean;
-  before?: React.ReactNode;
-  after?: React.ReactNode;
-  required?: boolean | string;
-  children(props: IFormFieldChildProps<Value>): React.ReactNode;
-}
+export { IFormFieldChildProps, IFormFieldProps } from './shared';
 
 export function FormField<Value>(props: IFormFieldProps<Value>) {
   let field: IUseField<Value>;

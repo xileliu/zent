@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Omit } from 'utility-types';
 
 import Input, { IInputProps, IInputClearEvent } from '../../input';
-import { FormField, IFormFieldProps, IFormFieldChildProps } from '../Field';
+import { FormField, IFormFieldChildProps } from '../Field';
+import { IFormComponentProps } from '../shared';
 
-export interface IFormInputFieldProps
-  extends Omit<IFormFieldProps<string>, 'children'> {
-  props?: Omit<IInputProps, 'value' | 'name' | 'defaultValue'>;
-}
+export type IFormInputFieldProps = IFormComponentProps<
+  string,
+  Omit<IInputProps, 'value' | 'name' | 'defaultValue'>
+>;
 
 function renderInput(
   childProps: IFormFieldChildProps<string>,

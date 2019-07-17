@@ -5,10 +5,6 @@ import { FormError } from './Error';
 import { IFormControlProps } from './Control';
 import { useFormContext, IFormChild } from './context';
 
-export function noopMapEventToValue<T>(e: T) {
-  return e;
-}
-
 export interface IRenderError<T> {
   (error: IMaybeError<T>): ReactNode;
 }
@@ -27,18 +23,27 @@ export type IFormFieldModelProps<T> =
   | IFormFieldViewDrivenProps<T>
   | IFormFieldModelDrivenProps<T>;
 
-export interface IFormFieldPropsBase<Value> extends IFormControlProps {
+export interface IFormFieldPropsBase<Value>
+  extends Omit<IFormControlProps, 'required'> {
   renderError?: IRenderError<Value>;
-  helpDesc?: ReactNode;
-  notice?: ReactNode;
+  helpDesc?: React.ReactNode;
+  notice?: React.ReactNode;
   withoutError?: boolean;
-  before?: ReactNode;
-  after?: ReactNode;
-  error?: IMaybeError<Value>;
+  before?: React.ReactNode;
+  after?: React.ReactNode;
+  required?: boolean | string;
+  children(props: IFormFieldChildProps<Value>): React.ReactNode;
 }
 
 export type IFormFieldProps<Value> = IFormFieldPropsBase<Value> &
   IFormFieldModelProps<Value>;
+
+export type IFormComponentProps<Value, Props> = Omit<
+  IFormFieldPropsBase<Value>,
+  'children'
+> & {
+  props?: Props;
+} & IFormFieldModelProps<Value>;
 
 export function dateDefaultValueFactory() {
   return new Date();
@@ -80,4 +85,13 @@ export function asFormChild(
       }
     };
   }, [model, scrollAnchorRef, ctx]);
+}
+
+export interface IFormFieldChildProps<Value> {
+  value: Value;
+  onChange(e: Value): void;
+  onFocus: React.FocusEventHandler;
+  onBlur: React.FocusEventHandler;
+  onCompositionStart: React.CompositionEventHandler;
+  onCompositionEnd: React.CompositionEventHandler;
 }
