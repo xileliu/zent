@@ -91,3 +91,9 @@ function validate<T>(
 ### 从 Model 构建表单
 
 <!-- demo-slot-8 -->
+
+### CombineErrors
+
+将多个字段的错误聚合到一起。
+
+<!-- demo-slot-9 -->

@@ -15,6 +15,7 @@ import memorize from '../utils/memorize-one';
 import { FormContext, IFormChild, IZentFormContext } from './context';
 import { ZentForm, useForm } from './ZentForm';
 import scroll from '../utils/scroll';
+import { CombineErrors } from './CombineErrors';
 
 function makeContext(
   disabled: boolean,
@@ -45,6 +46,7 @@ export class Form<T extends object = any> extends React.Component<
 > {
   static displayName = 'ZentForm';
 
+  static CombineErrors = CombineErrors;
   static useForm = useForm;
   static useField = useField;
   static useFieldArray = useFieldArray;
@@ -175,60 +177,3 @@ export class Form<T extends object = any> extends React.Component<
     );
   }
 }
-
-// export const Form: React.ForwardRefExoticComponent<
-//   IFormProps & React.RefAttributes<HTMLFormElement>
-// > &
-//   IFormApi = React.forwardRef<HTMLFormElement, IFormProps>(
-//   (
-//     {
-//       children,
-//       className,
-//       form,
-//       type = 'vertical',
-//       onSubmit,
-//       disabled = false,
-//       ...props
-//     },
-//     ref
-//   ) => {
-//     const ctx: IZentFormContext = React.useMemo(
-//       () => ({
-//         disabled,
-//         children: form.children,
-//       }),
-//       [disabled, form.children]
-//     );
-//     React.useEffect(() => {
-//       const $ = form.submit$.subscribe(() => {
-
-//         form.validate();
-//         if (form.isValid()) {
-
-//         }
-//       })
-//       return $.unsubscribe.bind($);
-//     }, [form.submit$]);
-//     return (
-//       <FormContext.Provider value={ctx}>
-//         <FormProvider value={form.ctx}>
-//           <form
-//             ref={ref}
-//             {...props}
-//             className={cx(
-//               'zent-form',
-//               {
-//                 'zent-form-vertical': type === 'vertical',
-//                 'zent-form-horizontal': type === 'horizontal',
-//               },
-//               className
-//             )}
-//             onSubmit={onSubmit}
-//           >
-//             {children}
-//           </form>
-//         </FormProvider>
-//       </FormContext.Provider>
-//     );
-//   }
-// ) as any;

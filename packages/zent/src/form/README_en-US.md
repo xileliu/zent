@@ -90,3 +90,9 @@ function validate<T>(
 #### `Model First`
 
 <!-- demo-slot-8 -->
+
+### CombineErrors
+
+Combine error display from multiple fields.
+
+<!-- demo-slot-9 -->
