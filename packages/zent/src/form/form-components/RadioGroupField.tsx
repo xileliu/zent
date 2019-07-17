@@ -2,31 +2,39 @@ import * as React from 'react';
 import { Omit } from 'utility-types';
 
 import { IRadioGroupProps, RadioGroup, IRadioEvent } from '../../radio';
-import {
-  useField,
-  IFormComponentCommonProps,
-  IFormFieldModelProps,
-} from '../shared';
+import { IFormComponentProps, IFormFieldChildProps } from '../shared';
 import { FormField } from '../Field';
 
-export interface IFormRadioGroupFieldProps<T>
-  extends IFormComponentCommonProps<T, Omit<IRadioGroupProps, 'value'>> {
+export type IFormRadioGroupFieldProps<T> = IFormComponentProps<
+  T | null,
+  Omit<IRadioGroupProps<T>, 'value'>
+> & {
   children?: React.ReactNode;
-}
+};
 
-function mapRadioEvent(e: IRadioEvent) {
-  return e.target.value;
+function renderRadioGroup<T>(
+  childProps: IFormFieldChildProps<T>,
+  props: IFormRadioGroupFieldProps<T>
+) {
+  const onChange = React.useCallback(
+    (e: IRadioEvent) => {
+      childProps.onChange(e.target.value);
+    },
+    [childProps.onChange]
+  );
+  return (
+    <RadioGroup {...props.props} {...childProps} onChange={onChange}>
+      {props.children}
+    </RadioGroup>
+  );
 }
 
 export function FormRadioGroupField<T>(
-  props: IFormRadioGroupFieldProps<T> & IFormFieldModelProps<T>
+  props: IFormRadioGroupFieldProps<T | null>
 ) {
-  const [childProps, { error }, ref] = useField(props, '', mapRadioEvent);
   return (
-    <FormField ref={ref} {...props} error={error}>
-      <RadioGroup {...props.props} {...childProps}>
-        {props.children}
-      </RadioGroup>
+    <FormField {...props} defaultValue={props.defaultValue || null}>
+      {childProps => renderRadioGroup(childProps, props)}
     </FormField>
   );
 }

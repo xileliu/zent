@@ -1,28 +1,33 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
 import Switch, { ISwitchProps } from '../../switch';
-import {
-  useField,
-  noopMapEventToValue,
-  IFormComponentCommonProps,
-  IFormFieldModelProps,
-} from '../shared';
+import { IFormComponentProps, IFormFieldChildProps } from '../shared';
 import { FormField } from '../Field';
 
-export interface IFormSwitchFieldProps
-  extends IFormComponentCommonProps<boolean, Omit<ISwitchProps, 'checked'>> {}
+export type IFormSwitchFieldProps = IFormComponentProps<
+  boolean,
+  Omit<ISwitchProps, 'checked'>
+>;
+
+function renderSwitch(
+  childProps: IFormFieldChildProps<boolean>,
+  props: IFormSwitchFieldProps
+) {
+  const { value, ...passedProps } = childProps;
+  return <Switch {...props.props} {...passedProps} checked={value} />;
+}
 
 export const FormSwitchField: React.FunctionComponent<
-  IFormSwitchFieldProps & IFormFieldModelProps<boolean>
+  IFormSwitchFieldProps
 > = props => {
-  const [{ value, ...childProps }, { error }, ref] = useField<
-    boolean,
-    boolean,
-    ISwitchProps
-  >(props, false, noopMapEventToValue);
   return (
-    <FormField ref={ref} {...props} error={error}>
-      <Switch {...props.props} {...childProps} checked={value} />
+    <FormField
+      {...props}
+      defaultValue={
+        typeof props.defaultValue === 'boolean' ? props.defaultValue : false
+      }
+    >
+      {childProps => renderSwitch(childProps, props)}
     </FormField>
   );
 };
