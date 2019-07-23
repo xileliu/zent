@@ -10,6 +10,9 @@ import {
   set,
   array,
   form,
+  FieldValue,
+  FieldSetValue,
+  useFieldArrayValue,
 } from 'formulr';
 import memorize from '../utils/memorize-one';
 import { FormContext, IFormChild, IZentFormContext } from './context';
@@ -55,6 +58,9 @@ export class Form<T extends object = any> extends React.Component<
   static set = set;
   static array = array;
   static form = form;
+  static FieldValue = FieldValue;
+  static FieldSetValue = FieldSetValue;
+  static useFieldArrayValue = useFieldArrayValue;
 
   formRef = React.createRef<HTMLFormElement>();
 

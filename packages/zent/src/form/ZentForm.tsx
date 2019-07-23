@@ -3,7 +3,7 @@ import * as Events from 'eventemitter3';
 import {
   IForm,
   ValidateStrategy,
-  FieldSetValue,
+  IFieldSetValue,
   useForm as superUseForm,
   FormStrategy,
   FormModel,
@@ -101,7 +101,7 @@ export class ZentForm<T> implements IForm<T> {
     this.events.emit('submit', e);
   };
 
-  validate(strategy: ValidateStrategy = ValidateStrategy.IgnoreAsync) {
+  validate(strategy: ValidateStrategy = ValidateStrategy.Default) {
     this.inner.model.validate(strategy);
   }
 
@@ -117,11 +117,11 @@ export class ZentForm<T> implements IForm<T> {
     return this.inner.model.getRawValue();
   }
 
-  initialize(value: FieldSetValue<T>) {
+  initialize(value: IFieldSetValue<T>) {
     this.inner.model.initialize(value);
   }
 
-  patchValue(value: FieldSetValue<T>) {
+  patchValue(value: IFieldSetValue<T>) {
     this.inner.model.patchValue(value);
   }
 
