@@ -5052,10 +5052,10 @@ format@^0.2.2:
   resolved "https://registry.yarnpkg.com/format/-/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
   integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
 
-formulr@0.2.0-beta.25:
-  version "0.2.0-beta.25"
-  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.25.tgz#337ee54bfd4ac0c4b449ae01ebdf677d7a26b1f8"
-  integrity sha512-C+DxmwH9mw1K+m6MXhNbwTXuAXZwhdD912bDUUxXY8HM08XcLI9p1WHyvHSX92rmwG9NMzAN5IQVff65btTSVA==
+formulr@0.2.0-beta.26:
+  version "0.2.0-beta.26"
+  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.26.tgz#bd3048521f5fe3706ceb630ac682accbf4a2abeb"
+  integrity sha512-EUhCRfY0RzKqR+ORxL6C6iSRtVUJnmWDNjtl0XFjqIu1iTVvooofF7038iCPRxapGUPWqFNfYdsIiUw9EFSdJQ==
   dependencies:
     "@types/big.js" "^4.0.5"
     "@types/react" "^16.8.0"

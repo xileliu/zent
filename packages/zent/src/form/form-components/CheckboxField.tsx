@@ -4,18 +4,18 @@ import Checkbox, { ICheckboxProps, ICheckboxEvent } from '../../checkbox';
 import { IFormComponentProps } from '../shared';
 import { FormField, IFormFieldChildProps } from '../Field';
 
-export type IFormCheckboxFieldProps = IFormComponentProps<
+export type IFormCheckboxFieldProps<Value> = IFormComponentProps<
   boolean,
-  Omit<ICheckboxProps, 'checked'>
+  Omit<ICheckboxProps<Value>, 'checked'>
 >;
 
-function renderCheckbox(
+function renderCheckbox<Value>(
   childProps: IFormFieldChildProps<boolean>,
-  props: IFormCheckboxFieldProps
+  props: IFormCheckboxFieldProps<Value>
 ) {
   const { value, ...passedProps } = childProps;
   const onChange = React.useCallback(
-    (e: ICheckboxEvent) => {
+    (e: ICheckboxEvent<Value>) => {
       childProps.onChange(e.target.checked);
     },
     [childProps.onChange]
@@ -30,10 +30,12 @@ function renderCheckbox(
   );
 }
 
-export const FormCheckboxField = (props: IFormCheckboxFieldProps) => {
+export function FormCheckboxField<Value>(
+  props: IFormCheckboxFieldProps<Value>
+) {
   return (
     <FormField {...props} defaultValue={props.defaultValue || false}>
       {childProps => renderCheckbox(childProps, props)}
     </FormField>
   );
-};
+}

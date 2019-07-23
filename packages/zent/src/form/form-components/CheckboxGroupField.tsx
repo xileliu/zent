@@ -6,7 +6,7 @@ import { IFormComponentProps } from '../shared';
 
 export type IFormCheckboxGroupFieldProps<T> = IFormComponentProps<
   T[],
-  Omit<ICheckboxGroupProps, 'value'>
+  Omit<ICheckboxGroupProps<T>, 'value'>
 > & {
   children?: React.ReactNode;
 };

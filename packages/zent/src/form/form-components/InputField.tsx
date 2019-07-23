@@ -24,7 +24,13 @@ function renderInput(
     },
     [childProps.onChange]
   );
-  return <Input {...props.props} {...childProps} onChange={onChange} />;
+  return (
+    <Input
+      {...(props.props as IInputProps)}
+      {...childProps}
+      onChange={onChange}
+    />
+  );
 }
 
 export const FormInputField: React.FunctionComponent<

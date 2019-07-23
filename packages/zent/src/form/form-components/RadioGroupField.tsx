@@ -17,7 +17,7 @@ function renderRadioGroup<T>(
   props: IFormRadioGroupFieldProps<T>
 ) {
   const onChange = React.useCallback(
-    (e: IRadioEvent) => {
+    (e: IRadioEvent<T>) => {
       childProps.onChange(e.target.value);
     },
     [childProps.onChange]
