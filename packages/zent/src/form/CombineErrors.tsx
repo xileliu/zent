@@ -108,7 +108,7 @@ export class CombineErrors extends React.Component<
   componentDidMount() {
     const { parent } = this.context;
     this.subscribe();
-    this.$parent = merge(parent.childRegister$, parent.childRemoved$).subscribe(
+    this.$parent = merge(parent.childRegister$, parent.childRemove$).subscribe(
       this.parentChildrenChange
     );
   }

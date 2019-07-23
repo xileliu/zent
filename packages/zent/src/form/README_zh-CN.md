@@ -78,24 +78,28 @@ function validate<T>(
 
 ### 其他
 
-#### `Form` 布局
+### `Form` 布局
 
 `Form` 组件使用`flex`布局，提供两种简单的样式：水平布局 `horizontal`， 垂直布局 `vertical`。
 
 <!-- demo-slot-6 -->
 
-#### `Field Array`
+### `Field Array`
 
 <!-- demo-slot-7 -->
 
-### 从 Model 构建表单
+## 从 Model 构建表单
 
 <!-- demo-slot-8 -->
 
-#### CombineErrors
+### CombineErrors
 
 将多个字段的错误聚合到一起。
 
 <!-- demo-slot-9 -->
 
+### 其他
+
 <!-- demo-slot-10 -->
+
+<!-- demo-slot-11 -->
