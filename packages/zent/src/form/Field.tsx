@@ -1,11 +1,18 @@
 import * as React from 'react';
-import { IUseField, useField, Validators, BasicModel } from 'formulr';
+import {
+  unstable_IdlePriority as IdlePriority,
+  unstable_scheduleCallback as scheduleCallback,
+  unstable_cancelCallback as cancelCallback,
+  CallbackNode,
+} from 'scheduler';
+import { useField, Validators, FieldModel } from 'formulr';
 import {
   defaultRenderError,
   IFormFieldProps,
   IFormFieldViewDrivenProps,
   IFormFieldModelDrivenProps,
   asFormChild,
+  ValidateOccasion,
 } from './shared';
 import { FormControl } from './Control';
 import { FormNotice } from './Notice';
@@ -14,28 +21,25 @@ import { FormDescription } from './Description';
 export { IFormFieldChildProps, IFormFieldProps } from './shared';
 
 export function FormField<Value>(props: IFormFieldProps<Value>) {
-  let field: IUseField<Value>;
+  let model: FieldModel<Value>;
   if ((props as any).name) {
     const {
       name,
       defaultValue,
       validators = [],
-    } = (props as unknown) as IFormFieldViewDrivenProps<Value>;
+    } = props as IFormFieldViewDrivenProps<Value>;
     if (
       props.required &&
       !validators.some(it => it.$$id === Validators.REQUIRED)
     ) {
       validators.unshift(Validators.required(props.required as string));
     }
-    field = useField<Value>(name, defaultValue as any, validators);
+    model = useField<Value>(name, defaultValue as any, validators);
   } else {
-    field = useField<Value>(
-      ((props as unknown) as IFormFieldModelDrivenProps<Value>).model
-    );
+    model = useField<Value>((props as IFormFieldModelDrivenProps<Value>).model);
   }
   const propsRef = React.useRef(props);
   propsRef.current = props;
-  const [childProps, model] = field;
   const {
     className,
     style,
@@ -48,23 +52,58 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
     withoutError,
     renderError = defaultRenderError,
     children,
+    validateOccasion = ValidateOccasion.Default,
   } = props;
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
-  asFormChild(model as BasicModel<unknown>, anchorRef);
-  const proxiedProps = React.useMemo(
+  asFormChild(model, anchorRef);
+  const taskRef = React.useRef<CallbackNode | null>(null);
+  const childProps = React.useMemo(
     () => ({
-      ...childProps,
+      value: model.value,
       onChange(value: Value) {
         const prevValue = model.value;
         const nextValue = props.normalize
           ? props.normalize(value, prevValue)
           : value;
-        childProps.onChange(nextValue);
+        model.value = nextValue;
+        if (validateOccasion & ValidateOccasion.Change) {
+          if (!taskRef.current) {
+            taskRef.current = scheduleCallback(IdlePriority, () => {
+              model.validate();
+            });
+          } else {
+            cancelCallback(taskRef.current);
+            taskRef.current = null;
+          }
+        }
+      },
+      onCompositionStart() {
+        model.isCompositing = true;
+      },
+      onCompositionEnd() {
+        model.isCompositing = false;
+      },
+      onBlur() {
+        if (validateOccasion & ValidateOccasion.Blur) {
+          model.validate();
+        }
+      },
+      onFocus() {
+        model._touched = true;
       },
     }),
+    [model]
+  );
+  React.useEffect(
+    () => () => {
+      if (taskRef.current) {
+        cancelCallback(taskRef.current);
+        taskRef.current = null;
+      }
+    },
     []
   );
-  proxiedProps.value = props.format ? props.format(model.value) : model.value;
+  childProps.value = props.format ? props.format(model.value) : model.value;
   return (
     <FormControl
       ref={anchorRef}
@@ -76,7 +115,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
     >
       <div className="zent-form-control-content-inner">
         {before}
-        {children(proxiedProps)}
+        {children(childProps)}
         {after}
       </div>
       {!!notice && <FormNotice>{notice}</FormNotice>}

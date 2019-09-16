@@ -5052,10 +5052,10 @@ format@^0.2.2:
   resolved "https://registry.yarnpkg.com/format/-/format-0.2.2.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
   integrity sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=
 
-formulr@0.2.0-beta.26:
-  version "0.2.0-beta.26"
-  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.26.tgz#bd3048521f5fe3706ceb630ac682accbf4a2abeb"
-  integrity sha512-EUhCRfY0RzKqR+ORxL6C6iSRtVUJnmWDNjtl0XFjqIu1iTVvooofF7038iCPRxapGUPWqFNfYdsIiUw9EFSdJQ==
+formulr@0.2.0-beta.30:
+  version "0.2.0-beta.30"
+  resolved "https://registry.yarnpkg.com/formulr/-/formulr-0.2.0-beta.30.tgz#9459475f182eaaa256d9626c5cdc0aee271a69eb"
+  integrity sha512-Y0eTuUKjIdPC5ucbBy31HLgMabjE1p+TJSp1hgOEaWjk2nf+qFlc2BnZ8KCfogFe8ku9IM49FdCcHx5BFzRacA==
   dependencies:
     "@types/big.js" "^4.0.5"
     "@types/react" "^16.8.0"
@@ -5064,7 +5064,6 @@ formulr@0.2.0-beta.26:
     react "^16.8.0"
     react-dom "^16.8.0"
     rxjs "^6.4.0"
-    scheduler "0.14.0"
     tslib "^1.9.3"
     utility-types "^3.5.0"
 
@@ -11120,18 +11119,18 @@ sax@>=0.6.0, sax@^1.2.4, sax@~1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-scheduler@0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.14.0.tgz#b392c23c9c14bfa2933d4740ad5603cc0d59ea5b"
-  integrity sha512-9CgbS06Kki2f4R9FjLSITjZo5BZxPsryiRNyL3LpvrM9WxcVmhlqAOc9E+KQbeI2nqej4JIIbOsfdL51cNb4Iw==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-
 scheduler@^0.13.6:
   version "0.13.6"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.6.tgz#466a4ec332467b31a91b9bf74e5347072e4cd889"
   integrity sha512-IWnObHt413ucAYKsD9J1QShUKkbKLQQHdxRyw73sw4FN26iWr3DY/H34xGPe4nmL1DwXyWmSWmMrA9TfQbE/XQ==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+"scheduler@~0.14.0 || ~0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.15.0.tgz#6bfcf80ff850b280fed4aeecc6513bc0b4f17f8e"
+  integrity sha512-xAefmSfN6jqAa7Kuq7LIJY0bwAPG3xlCj0HMEBQk1lxYiDKZscY2xJ5U/61ZTrYbmNQbXa+gc7czPkVo11tnCg==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"

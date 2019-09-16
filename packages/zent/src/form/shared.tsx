@@ -25,6 +25,13 @@ export type IFormFieldModelProps<T> =
   | IFormFieldViewDrivenProps<T>
   | IFormFieldModelDrivenProps<T>;
 
+// prettier-ignore
+export enum ValidateOccasion {
+  Default   =     0b0011,
+  Change    =     0b0001,
+  Blur      =     0b0010,
+}
+
 export interface IFormFieldPropsBase<Value>
   extends Omit<IFormControlProps, 'required' | 'invalid'> {
   renderError?: IRenderError<Value>;
@@ -34,6 +41,7 @@ export interface IFormFieldPropsBase<Value>
   before?: React.ReactNode;
   after?: React.ReactNode;
   required?: boolean | string;
+  validateOccasion?: ValidateOccasion;
   normalize?: (value: Value, prevValue: Value) => Value;
   format?: (value: Value) => Value;
   children(props: IFormFieldChildProps<Value>): React.ReactNode;
@@ -67,8 +75,8 @@ export function defaultRenderError<T>(error: IMaybeError<T>) {
   return <FormError>{error.message}</FormError>;
 }
 
-export function asFormChild(
-  model: BasicModel<unknown>,
+export function asFormChild<Value>(
+  model: BasicModel<Value>,
   scrollAnchorRef?: RefObject<Element | null | undefined>
 ) {
   const ctx = useFormContext();
