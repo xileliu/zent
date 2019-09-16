@@ -4,6 +4,7 @@ import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 import WeekPicker, { IWeekPickerProps } from '../../datetimepicker/WeekPicker';
 import { DatePickers } from '../../datetimepicker/common/types';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormWeekPickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
@@ -16,7 +17,10 @@ export const FormWeekPickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormWeekPickerFieldProps>).defaultValue ||
+        dateRangeDefaultValueFactory
+      }
     >
       {childProps => <WeekPicker {...props.props} {...childProps} />}
     </FormField>

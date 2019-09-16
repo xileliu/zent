@@ -4,6 +4,7 @@ import { Omit } from 'utility-types';
 import Input, { IInputProps, IInputClearEvent } from '../../input';
 import { FormField, IFormFieldChildProps } from '../Field';
 import { IFormComponentProps } from '../shared';
+import { $MergeParams } from '../utils';
 
 export type IFormInputFieldProps = IFormComponentProps<
   string,
@@ -37,7 +38,12 @@ export const FormInputField: React.FunctionComponent<
   IFormInputFieldProps
 > = props => {
   return (
-    <FormField {...props} defaultValue={props.defaultValue || ''}>
+    <FormField
+      {...props}
+      defaultValue={
+        (props as $MergeParams<IFormInputFieldProps>).defaultValue || ''
+      }
+    >
       {childProps => renderInput(childProps, props)}
     </FormField>
   );

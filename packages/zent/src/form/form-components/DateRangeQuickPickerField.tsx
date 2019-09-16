@@ -6,6 +6,7 @@ import DateRangeQuickPicker, {
 import { DatePickers } from '../../datetimepicker/common/types';
 import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormDateRangeQuickPickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
@@ -18,7 +19,10 @@ export const FormDateRangeQuickPickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormDateRangeQuickPickerFieldProps>)
+          .defaultValue || dateRangeDefaultValueFactory
+      }
     >
       {childProps => {
         const [chosenDays, setChosenDays] = React.useState<number | undefined>(

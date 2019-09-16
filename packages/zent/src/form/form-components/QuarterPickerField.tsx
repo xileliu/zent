@@ -6,6 +6,7 @@ import QuarterPicker, {
 import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
 import { FormField } from '../Field';
 import { DatePickers } from '../../datetimepicker/common/types';
+import { $MergeParams } from '../utils';
 
 export type IFormQuarterPickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
@@ -18,7 +19,10 @@ export const FormQuarterPickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormQuarterPickerFieldProps>).defaultValue ||
+        dateRangeDefaultValueFactory
+      }
     >
       {childProps => <QuarterPicker {...props.props} {...childProps} />}
     </FormField>

@@ -2,11 +2,12 @@ import { useMemo, useReducer } from 'react';
 import * as Events from 'eventemitter3';
 import {
   IForm,
-  ValidateStrategy,
-  IFieldSetValue,
+  ValidateOption,
+  $FieldSetValue,
   useForm as superUseForm,
   FormStrategy,
   FormModel,
+  BasicModel,
 } from 'formulr';
 
 export interface IFormEventMap {
@@ -68,7 +69,8 @@ export interface IFormEvents {
   removeAllListeners<Type extends keyof IFormEventMap>(name: Type): void;
 }
 
-export class ZentForm<T> implements IForm<T> {
+export class ZentForm<T extends Record<string, BasicModel<unknown>>>
+  implements IForm<T> {
   events: IFormEvents = new Events();
 
   /** @internal */
@@ -101,8 +103,8 @@ export class ZentForm<T> implements IForm<T> {
     this.events.emit('submit', e);
   };
 
-  validate(strategy: ValidateStrategy = ValidateStrategy.Default) {
-    this.inner.model.validate(strategy);
+  validate(option: ValidateOption = ValidateOption.Default) {
+    this.inner.model.validate(option);
   }
 
   isValid() {
@@ -117,11 +119,11 @@ export class ZentForm<T> implements IForm<T> {
     return this.inner.model.getRawValue();
   }
 
-  initialize(value: IFieldSetValue<T>) {
+  initialize(value: $FieldSetValue<T>) {
     this.inner.model.initialize(value);
   }
 
-  patchValue(value: IFieldSetValue<T>) {
+  patchValue(value: $FieldSetValue<T>) {
     this.inner.model.patchValue(value);
   }
 
@@ -142,7 +144,9 @@ export class ZentForm<T> implements IForm<T> {
   }
 }
 
-export function useForm<T>(arg: FormStrategy.View | (() => FormModel<T>)) {
+export function useForm<T extends Record<string, BasicModel<unknown>>>(
+  arg: FormStrategy.View | (() => FormModel<T>)
+) {
   const inner = superUseForm(arg);
   const [state, dispatch] = useReducer(formReducer, initialState);
   const form = useMemo(() => new ZentForm(inner, state, dispatch), [inner]);

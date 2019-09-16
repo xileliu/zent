@@ -6,6 +6,7 @@ import MonthPicker, {
 import { DatePickers } from '../../datetimepicker/common/types';
 import { dateDefaultValueFactory, IFormComponentProps } from '../shared';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormMonthPickerFieldProps = IFormComponentProps<
   DatePickers.Value,
@@ -18,7 +19,10 @@ export const FormMonthPickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormMonthPickerFieldProps>).defaultValue ||
+        dateDefaultValueFactory
+      }
     >
       {childProps => <MonthPicker {...props.props} {...childProps} />}
     </FormField>

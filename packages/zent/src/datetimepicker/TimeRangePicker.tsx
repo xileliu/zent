@@ -6,6 +6,7 @@
 import * as React from 'react';
 import { PureComponent } from 'react';
 import cx from 'classnames';
+import { Omit } from 'utility-types';
 import isString from 'lodash-es/isString';
 import isDate from 'lodash-es/isDate';
 
@@ -65,7 +66,7 @@ export class TimeRangePicker extends PureComponent<ITimeRangePickerProps> {
       } else {
         ret.length === 0 ? ret.splice(1, 1, '', val) : ret.splice(1, 1, val);
       }
-      onChange(ret as any);
+      onChange && onChange(ret as any);
     };
   };
 

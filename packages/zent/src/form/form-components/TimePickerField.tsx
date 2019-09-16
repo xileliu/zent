@@ -4,6 +4,7 @@ import { DatePickers } from '../../datetimepicker/common/types';
 import { dateDefaultValueFactory, IFormComponentProps } from '../shared';
 import TimePicker, { ITimePickerProps } from '../../datetimepicker/TimePicker';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormTimePickerField = IFormComponentProps<
   DatePickers.Value,
@@ -16,7 +17,10 @@ export const FormTimePickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormTimePickerField>).defaultValue ||
+        dateDefaultValueFactory
+      }
     >
       {childProps => <TimePicker {...props.props} {...childProps} />}
     </FormField>

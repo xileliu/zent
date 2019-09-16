@@ -6,6 +6,7 @@ import TimeRangePicker, {
   ITimeRangePickerProps,
 } from '../../datetimepicker/TimeRangePicker';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormTimeRangePickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
@@ -18,7 +19,10 @@ export const FormTimeRangePickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormTimeRangePickerFieldProps>).defaultValue ||
+        dateRangeDefaultValueFactory
+      }
     >
       {childProps => <TimeRangePicker {...props.props} {...childProps} />}
     </FormField>

@@ -13,6 +13,7 @@ import {
   FieldValue,
   FieldSetValue,
   useFieldArrayValue,
+  BasicModel,
 } from 'formulr';
 import memorize from '../utils/memorize-one';
 import { FormContext, IFormChild, IZentFormContext } from './context';
@@ -30,7 +31,9 @@ function makeContext(
   };
 }
 
-export interface IFormProps<T extends object = any>
+export interface IFormProps<
+  T extends Record<string, BasicModel<unknown>> = any
+>
   extends Omit<
     React.FormHTMLAttributes<HTMLFormElement>,
     'onSubmit' | 'dangerouslySetInnerHTML'
@@ -44,9 +47,9 @@ export interface IFormProps<T extends object = any>
   onSubmitSuccess?: () => void;
 }
 
-export class Form<T extends object = any> extends React.Component<
-  IFormProps<T>
-> {
+export class Form<
+  T extends Record<string, BasicModel<unknown>> = any
+> extends React.Component<IFormProps<T>> {
   static displayName = 'ZentForm';
 
   static CombineErrors = CombineErrors;

@@ -4,6 +4,7 @@ import { dateDefaultValueFactory, IFormComponentProps } from '../shared';
 import YearPicker, { IYearPickerProps } from '../../datetimepicker/YearPicker';
 import { DatePickers } from '../../datetimepicker/common/types';
 import { FormField } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormYearPickerFieldProps = IFormComponentProps<
   DatePickers.Value,
@@ -16,7 +17,10 @@ export const FormYearPickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormYearPickerFieldProps>).defaultValue ||
+        dateDefaultValueFactory
+      }
     >
       {childProps => <YearPicker {...props.props} {...childProps} />}
     </FormField>

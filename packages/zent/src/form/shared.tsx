@@ -53,12 +53,15 @@ export type IFormFieldProps<Value> = IFormFieldPropsBase<Value> &
 export type IFormComponentProps<Value, Props> = Omit<
   IFormFieldPropsBase<Value>,
   'children'
-> & {
-  props?: Props;
-  defaultValue?: Value | (() => Value);
-} & (
-    | Omit<IFormFieldViewDrivenProps<Value>, 'defaultValue'>
+> & { props?: Props } & (
+    | IFormFieldViewDrivenProps<Value>
     | IFormFieldModelDrivenProps<Value>);
+
+export type IFormComponentPropsInternal<Value, Props> = Omit<
+  IFormFieldPropsBase<Value>,
+  'children'
+> & { props?: Props } & (IFormFieldViewDrivenProps<Value> &
+    IFormFieldModelDrivenProps<Value>);
 
 export function dateDefaultValueFactory(): DatePickers.Value {
   return new Date();

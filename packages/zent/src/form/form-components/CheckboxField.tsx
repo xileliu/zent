@@ -3,6 +3,7 @@ import { Omit } from 'utility-types';
 import Checkbox, { ICheckboxProps, ICheckboxEvent } from '../../checkbox';
 import { IFormComponentProps } from '../shared';
 import { FormField, IFormFieldChildProps } from '../Field';
+import { $MergeParams } from '../utils';
 
 export type IFormCheckboxFieldProps<Value> = IFormComponentProps<
   boolean,
@@ -34,7 +35,13 @@ export function FormCheckboxField<Value>(
   props: IFormCheckboxFieldProps<Value>
 ) {
   return (
-    <FormField {...props} defaultValue={props.defaultValue || false}>
+    <FormField
+      {...props}
+      defaultValue={
+        (props as $MergeParams<IFormCheckboxFieldProps<Value>>).defaultValue ||
+        false
+      }
+    >
       {childProps => renderCheckbox(childProps, props)}
     </FormField>
   );

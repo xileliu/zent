@@ -6,6 +6,7 @@ import DateRangePicker, {
 } from '../../datetimepicker/DateRangePicker';
 import { FormField } from '../Field';
 import { IFormComponentProps, dateRangeDefaultValueFactory } from '../shared';
+import { $MergeParams } from '../utils';
 
 export type IFormDateRangePickerFieldProps = IFormComponentProps<
   DatePickers.RangeValue,
@@ -18,7 +19,10 @@ export const FormDateRangePickerField: React.FunctionComponent<
   return (
     <FormField
       {...props}
-      defaultValue={props.defaultValue || dateRangeDefaultValueFactory}
+      defaultValue={
+        (props as $MergeParams<IFormDateRangePickerFieldProps>).defaultValue ||
+        dateRangeDefaultValueFactory
+      }
     >
       {childProps => <DateRangePicker {...props.props} {...childProps} />}
     </FormField>
