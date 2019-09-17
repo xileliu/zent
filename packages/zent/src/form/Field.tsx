@@ -5,7 +5,7 @@ import {
   unstable_cancelCallback as cancelCallback,
   CallbackNode,
 } from 'scheduler';
-import { useField, Validators, FieldModel } from 'formulr';
+import { useField, Validators, FieldModel, useFormContext } from 'formulr';
 import {
   defaultRenderError,
   IFormFieldProps,
@@ -57,6 +57,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   asFormChild(model, anchorRef);
   const taskRef = React.useRef<CallbackNode | null>(null);
+  const { form } = useFormContext();
   const childProps = React.useMemo(
     () => ({
       value: model.value,
@@ -66,6 +67,9 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
           ? props.normalize(value, prevValue)
           : value;
         model.value = nextValue;
+        if (model.isCompositing) {
+          return;
+        }
         if (validateOccasion & ValidateOccasion.Change) {
           if (!taskRef.current) {
             taskRef.current = scheduleCallback(IdlePriority, () => {
@@ -76,6 +80,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
             taskRef.current = null;
           }
         }
+        form.change$.next();
       },
       onCompositionStart() {
         model.isCompositing = true;

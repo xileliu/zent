@@ -6,9 +6,10 @@ import {
   $FieldSetValue,
   useForm as superUseForm,
   FormStrategy,
-  FormModel,
+  FormBuilder,
   BasicModel,
 } from 'formulr';
+import { BasicBuilder } from 'formulr/esm/builders/basic';
 
 export interface IFormEventMap {
   submit: React.SyntheticEvent | undefined;
@@ -144,9 +145,9 @@ export class ZentForm<T extends Record<string, BasicModel<unknown>>>
   }
 }
 
-export function useForm<T extends Record<string, BasicModel<unknown>>>(
-  arg: FormStrategy.View | (() => FormModel<T>)
-) {
+export function useForm<
+  T extends Record<string, BasicBuilder<unknown, BasicModel<unknown>>>
+>(arg: FormStrategy.View | FormBuilder<T>) {
   const inner = superUseForm(arg);
   const [state, dispatch] = useReducer(formReducer, initialState);
   const form = useMemo(() => new ZentForm(inner, state, dispatch), [inner]);

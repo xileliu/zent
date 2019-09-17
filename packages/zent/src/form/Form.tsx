@@ -14,6 +14,7 @@ import {
   FieldSetValue,
   useFieldArrayValue,
   BasicModel,
+  makeDefaultFieldProps,
 } from 'formulr';
 import memorize from '../utils/memorize-one';
 import { FormContext, IFormChild, IZentFormContext } from './context';
@@ -38,7 +39,7 @@ export interface IFormProps<
     React.FormHTMLAttributes<HTMLFormElement>,
     'onSubmit' | 'dangerouslySetInnerHTML'
   > {
-  type: 'horizontal' | 'vertical';
+  layout: 'horizontal' | 'vertical';
   form: ZentForm<T>;
   disabled?: boolean;
   scrollToError?: boolean;
@@ -64,6 +65,7 @@ export class Form<
   static FieldValue = FieldValue;
   static FieldSetValue = FieldSetValue;
   static useFieldArrayValue = useFieldArrayValue;
+  static makeDefaultFieldProps = makeDefaultFieldProps;
 
   formRef = React.createRef<HTMLFormElement>();
 
@@ -147,14 +149,14 @@ export class Form<
     }
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     this.removeEventListeners();
   }
 
   render() {
     const {
       children,
-      type = 'vertical',
+      layout = 'vertical',
       className,
       form,
       onSubmit,
@@ -172,8 +174,8 @@ export class Form<
             className={cx(
               'zent-form',
               {
-                'zent-form-vertical': type === 'vertical',
-                'zent-form-horizontal': type === 'horizontal',
+                'zent-form-vertical': layout === 'vertical',
+                'zent-form-horizontal': layout === 'horizontal',
               },
               className
             )}
