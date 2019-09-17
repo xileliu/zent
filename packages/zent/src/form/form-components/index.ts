@@ -9,7 +9,7 @@ export * from './MonthPickerField';
 export * from './NumberInputField';
 export * from './QuarterPickerField';
 export * from './RadioGroupField';
-
+export * from './SelectField';
 export * from './SwitchField';
 export * from './TimePickerField';
 export * from './TimeRangePickerField';

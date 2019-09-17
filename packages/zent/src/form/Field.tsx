@@ -80,6 +80,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
             taskRef.current = null;
           }
         }
+        model._touched = true;
         form.change$.next();
       },
       onCompositionStart() {
