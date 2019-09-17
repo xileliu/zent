@@ -34,7 +34,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
     ) {
       validators.unshift(Validators.required(props.required as string));
     }
-    model = useField<Value>(name, defaultValue as any, validators);
+    model = useField<Value>(name, defaultValue, validators);
   } else {
     model = useField<Value>((props as IFormFieldModelDrivenProps<Value>).model);
   }

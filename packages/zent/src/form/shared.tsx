@@ -44,24 +44,16 @@ export interface IFormFieldPropsBase<Value>
   validateOccasion?: ValidateOccasion;
   normalize?: (value: Value, prevValue: Value) => Value;
   format?: (value: Value) => Value;
-  children(props: IFormFieldChildProps<Value>): React.ReactNode;
 }
 
 export type IFormFieldProps<Value> = IFormFieldPropsBase<Value> &
-  IFormFieldModelProps<Value>;
+  IFormFieldModelProps<Value> & {
+    children(props: IFormFieldChildProps<Value>): React.ReactNode;
+  };
 
-export type IFormComponentProps<Value, Props> = Omit<
-  IFormFieldPropsBase<Value>,
-  'children'
-> & { props?: Props } & (
-    | IFormFieldViewDrivenProps<Value>
-    | IFormFieldModelDrivenProps<Value>);
-
-export type IFormComponentPropsInternal<Value, Props> = Omit<
-  IFormFieldPropsBase<Value>,
-  'children'
-> & { props?: Props } & (IFormFieldViewDrivenProps<Value> &
-    IFormFieldModelDrivenProps<Value>);
+export type IFormComponentProps<Value, Props> = IFormFieldPropsBase<Value> & {
+  props?: Props;
+} & IFormFieldModelProps<Value>;
 
 export function dateDefaultValueFactory(): DatePickers.Value {
   return new Date();
