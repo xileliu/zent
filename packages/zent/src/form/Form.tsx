@@ -15,6 +15,7 @@ import {
   useFieldArrayValue,
   BasicModel,
   makeDefaultFieldProps,
+  ValidateOption,
 } from 'formulr';
 import memorize from '../utils/memorize-one';
 import { FormContext, IFormChild, IZentFormContext } from './context';
@@ -66,8 +67,9 @@ export class Form<
   static FieldSetValue = FieldSetValue;
   static useFieldArrayValue = useFieldArrayValue;
   static makeDefaultFieldProps = makeDefaultFieldProps;
+  static ValidateOption = ValidateOption;
 
-  formRef = React.createRef<HTMLFormElement>();
+  readonly formRef = React.createRef<HTMLFormElement>();
 
   private readonly children: IFormChild[] = [];
   private getContext = memorize(makeContext);

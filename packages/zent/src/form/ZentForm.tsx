@@ -104,8 +104,8 @@ export class ZentForm<T extends Record<string, BasicModel<unknown>>>
     this.events.emit('submit', e);
   };
 
-  validate(option: ValidateOption = ValidateOption.Default) {
-    this.inner.model.validate(option);
+  validate(option: ValidateOption = ValidateOption.Default): Promise<any> {
+    return this.inner.model.validate(option);
   }
 
   isValid() {
