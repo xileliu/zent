@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Omit } from 'utility-types';
-import { FieldModel, Validators, useField, useFormContext } from 'formulr';
+import { FieldModel, Validators, useField } from 'formulr';
 import {
   IFormComponentProps,
   IFormFieldViewDrivenProps,
@@ -68,7 +68,6 @@ export const FormSelectField: React.FunctionComponent<
   } = props;
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   asFormChild(model, anchorRef);
-  const { form } = useFormContext();
   const onChange = React.useCallback(
     (e: any) => {
       if (propsRef.current.tags) {
@@ -83,7 +82,6 @@ export const FormSelectField: React.FunctionComponent<
         model.validate();
       }
       model._touched = true;
-      form.change$.next();
     },
     [model]
   );

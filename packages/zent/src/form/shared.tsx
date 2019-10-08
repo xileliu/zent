@@ -51,6 +51,7 @@ export interface IFormFieldPropsBase<Value>
   normalize?: (value: Value, prevValue: Value) => Value;
   format?: (value: Value) => Value;
   getValidateOption?: (source: string) => ValidateOption;
+  modelRef?: React.RefObject<FieldModel<Value>>;
 }
 
 export type IFormFieldProps<Value> = IFormFieldPropsBase<Value> &

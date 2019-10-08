@@ -5,13 +5,7 @@ import {
   unstable_cancelCallback as cancelCallback,
   CallbackNode,
 } from 'scheduler';
-import {
-  useField,
-  Validators,
-  FieldModel,
-  useFormContext,
-  ValidateOption,
-} from 'formulr';
+import { useField, Validators, FieldModel, ValidateOption } from 'formulr';
 import {
   defaultRenderError,
   IFormFieldProps,
@@ -48,6 +42,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
   } else {
     model = useField<Value>((props as IFormFieldModelDrivenProps<Value>).model);
   }
+  React.useImperativeHandle(props.modelRef, () => model, [model]);
   const propsRef = React.useRef(props);
   propsRef.current = props;
   const {
@@ -69,7 +64,6 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   asFormChild(model, anchorRef);
   const taskRef = React.useRef<CallbackNode | null>(null);
-  const { form } = useFormContext();
   const childProps = React.useMemo(
     () => ({
       value: model.value,
@@ -91,7 +85,6 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
           }
         }
         model._touched = true;
-        form.change$.next();
       },
       onCompositionStart() {
         model.isCompositing = true;
