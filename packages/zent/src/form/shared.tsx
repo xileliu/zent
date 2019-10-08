@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { FieldModel, IValidator, IMaybeError, BasicModel } from 'formulr';
+import {
+  FieldModel,
+  IValidator,
+  IMaybeError,
+  BasicModel,
+  ValidateOption,
+} from 'formulr';
 import { useRef, ReactNode, RefObject } from 'react';
 import { Omit } from 'utility-types';
 import { FormError } from './Error';
@@ -27,9 +33,9 @@ export type IFormFieldModelProps<T> =
 
 // prettier-ignore
 export enum ValidateOccasion {
-  Default   =     0b0011,
   Change    =     0b0001,
   Blur      =     0b0010,
+  Default   =     Change | Blur,
 }
 
 export interface IFormFieldPropsBase<Value>
@@ -44,6 +50,7 @@ export interface IFormFieldPropsBase<Value>
   validateOccasion?: ValidateOccasion;
   normalize?: (value: Value, prevValue: Value) => Value;
   format?: (value: Value) => Value;
+  getValidateOption?: (source: string) => ValidateOption;
 }
 
 export type IFormFieldProps<Value> = IFormFieldPropsBase<Value> &

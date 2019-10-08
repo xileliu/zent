@@ -5,7 +5,13 @@ import {
   unstable_cancelCallback as cancelCallback,
   CallbackNode,
 } from 'scheduler';
-import { useField, Validators, FieldModel, useFormContext } from 'formulr';
+import {
+  useField,
+  Validators,
+  FieldModel,
+  useFormContext,
+  ValidateOption,
+} from 'formulr';
 import {
   defaultRenderError,
   IFormFieldProps,
@@ -19,6 +25,10 @@ import { FormNotice } from './Notice';
 import { FormDescription } from './Description';
 
 export { IFormFieldChildProps, IFormFieldProps } from './shared';
+
+function defaultGetValidateOption() {
+  return ValidateOption.Default;
+}
 
 export function FormField<Value>(props: IFormFieldProps<Value>) {
   let model: FieldModel<Value>;
@@ -53,6 +63,8 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
     renderError = defaultRenderError,
     children,
     validateOccasion = ValidateOccasion.Default,
+    getValidateOption = defaultGetValidateOption,
+    normalize,
   } = props;
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   asFormChild(model, anchorRef);
@@ -63,9 +75,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       value: model.value,
       onChange(value: Value) {
         const prevValue = model.value;
-        const nextValue = props.normalize
-          ? props.normalize(value, prevValue)
-          : value;
+        const nextValue = normalize ? normalize(value, prevValue) : value;
         model.value = nextValue;
         if (model.isCompositing) {
           return;
@@ -98,7 +108,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
         model._touched = true;
       },
     }),
-    [model]
+    [model, normalize, getValidateOption, validateOccasion]
   );
   React.useEffect(
     () => () => {

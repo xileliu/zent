@@ -47,16 +47,13 @@ export interface IFormProps<
   onSubmit?: (form: ZentForm<T>, e?: React.SyntheticEvent) => void;
   onSubmitFail?: (e: unknown) => void;
   onSubmitSuccess?: () => void;
-  disableEnterSubmit: boolean;
+  disableEnterSubmit?: boolean;
 }
 
 export class Form<
   T extends Record<string, BasicModel<unknown>> = any
 > extends React.Component<IFormProps<T>> {
   static displayName = 'ZentForm';
-  static defaultProps = {
-    disableEnterSubmit: true,
-  };
 
   static CombineErrors = CombineErrors;
   static useForm = useForm;
@@ -84,7 +81,7 @@ export class Form<
   };
 
   private onKeyDown: React.KeyboardEventHandler<HTMLFormElement> = e => {
-    const { onKeyDown, disableEnterSubmit } = this.props;
+    const { onKeyDown, disableEnterSubmit = true } = this.props;
     if (
       e.key === 'Enter' &&
       disableEnterSubmit &&
