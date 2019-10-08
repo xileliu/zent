@@ -1,5 +1,4 @@
-import { useMemo, useReducer } from 'react';
-import * as Events from 'eventemitter3';
+import { useMemo, useReducer, FormEvent } from 'react';
 import {
   IForm,
   ValidateOption,
@@ -8,15 +7,9 @@ import {
   FormStrategy,
   FormBuilder,
   BasicModel,
+  BasicBuilder,
 } from 'formulr';
-import { BasicBuilder } from 'formulr/esm/builders/basic';
-
-export interface IFormEventMap {
-  submit: React.SyntheticEvent | undefined;
-  'submit-start': void;
-  'submit-success': void;
-  'submit-error': any;
-}
+import { Subject } from 'rxjs';
 
 export interface IFormAction {
   type: 'SUBMIT_START' | 'SUBMIT_SUCCESS' | 'SUBMIT_ERROR';
@@ -48,29 +41,10 @@ function formReducer(state: IFormState, action: IFormAction): IFormState {
   }
 }
 
-export interface IFormEvents {
-  emit<Type extends keyof IFormEventMap>(
-    name: Type,
-    arg: IFormEventMap[Type]
-  ): void;
-  on<Type extends keyof IFormEventMap>(
-    name: Type,
-    listener: (arg: IFormEventMap[Type]) => void
-  ): void;
-  off<Type extends keyof IFormEventMap>(
-    name: Type,
-    listener: (arg: IFormEventMap[Type]) => void
-  ): void;
-  once<Type extends keyof IFormEventMap>(
-    name: Type,
-    listener: (arg: IFormEventMap[Type]) => void
-  ): void;
-  removeAllListeners<Type extends keyof IFormEventMap>(name: Type): void;
-}
-
 export class ZentForm<T extends Record<string, BasicModel<unknown>>>
   implements IForm<T> {
-  events: IFormEvents = new Events();
+  /** @internal */
+  submit$ = new Subject<FormEvent | undefined>();
 
   /** @internal */
   constructor(
@@ -99,7 +73,7 @@ export class ZentForm<T extends Record<string, BasicModel<unknown>>>
    * ```
    */
   submit = (e?: React.SyntheticEvent) => {
-    this.events.emit('submit', e);
+    this.submit$.next(e);
   };
 
   validate(option: ValidateOption = ValidateOption.Default): Promise<any> {
@@ -131,21 +105,18 @@ export class ZentForm<T extends Record<string, BasicModel<unknown>>>
   }
 
   submitStart() {
-    this.events.emit('submit-start', void 0);
     this.dispatch({
       type: 'SUBMIT_START',
     });
   }
 
   submitSuccess() {
-    this.events.emit('submit-success', void 0);
     this.dispatch({
       type: 'SUBMIT_SUCCESS',
     });
   }
 
   submitError(error: any) {
-    this.events.emit('submit-error', error);
     this.dispatch({
       type: 'SUBMIT_ERROR',
     });

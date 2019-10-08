@@ -1,6 +1,7 @@
 import * as React from 'react';
 import cx from 'classnames';
 import { Omit } from 'utility-types';
+import { Subscription } from 'rxjs';
 import {
   FormProvider,
   useField,
@@ -74,6 +75,7 @@ export class Form<
 
   private readonly children: IFormChild[] = [];
   private getContext = memorize(makeContext);
+  private subscription: Subscription | null = null;
 
   private onSubmit: React.FormEventHandler<HTMLFormElement> = e => {
     e.preventDefault();
@@ -138,12 +140,14 @@ export class Form<
 
   private listenEvents() {
     const { form } = this.props;
-    form.events.on('submit', this.submitListener);
+    this.subscription = form.submit$.subscribe(this.submitListener);
   }
 
   private removeEventListeners() {
-    const { form } = this.props;
-    form.events.off('submit', this.submitListener);
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
   }
 
   componentDidMount() {
