@@ -31,6 +31,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       name,
       defaultValue,
       validators = [],
+      destroyOnUnmount,
     } = props as IFormFieldViewDrivenProps<Value>;
     if (
       props.required &&
@@ -39,6 +40,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       validators.unshift(Validators.required(props.required as string));
     }
     model = useField<Value>(name, defaultValue, validators);
+    model.destroyOnUnmount = Boolean(destroyOnUnmount);
   } else {
     model = useField<Value>((props as IFormFieldModelDrivenProps<Value>).model);
   }

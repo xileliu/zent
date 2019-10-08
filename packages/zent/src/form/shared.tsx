@@ -21,6 +21,7 @@ export interface IFormFieldViewDrivenProps<T> {
   name: string;
   defaultValue: T | (() => T);
   validators?: Array<IValidator<T>>;
+  destroyOnUnmount?: boolean;
 }
 
 export interface IFormFieldModelDrivenProps<T> {
