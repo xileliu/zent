@@ -14,16 +14,13 @@ import { BasicBuilder } from 'formulr/esm/builders/basic';
 export interface IFormEventMap {
   submit: React.SyntheticEvent | undefined;
   'submit-start': void;
-  'submit-stop': void;
+  'submit-success': void;
+  'submit-error': any;
 }
 
-export type IFormAction =
-  | {
-      type: 'SUBMIT_START';
-    }
-  | {
-      type: 'SUBMIT_STOP';
-    };
+export interface IFormAction {
+  type: 'SUBMIT_START' | 'SUBMIT_SUCCESS' | 'SUBMIT_ERROR';
+}
 
 export interface IFormState {
   submitting: boolean;
@@ -40,7 +37,8 @@ function formReducer(state: IFormState, action: IFormAction): IFormState {
         ...state,
         submitting: true,
       };
-    case 'SUBMIT_STOP':
+    case 'SUBMIT_SUCCESS':
+    case 'SUBMIT_ERROR':
       return {
         ...state,
         submitting: false,
@@ -133,14 +131,23 @@ export class ZentForm<T extends Record<string, BasicModel<unknown>>>
   }
 
   submitStart() {
+    this.events.emit('submit-start', void 0);
     this.dispatch({
       type: 'SUBMIT_START',
     });
   }
 
-  submitStop() {
+  submitSuccess() {
+    this.events.emit('submit-success', void 0);
     this.dispatch({
-      type: 'SUBMIT_STOP',
+      type: 'SUBMIT_SUCCESS',
+    });
+  }
+
+  submitError(error: any) {
+    this.events.emit('submit-error', error);
+    this.dispatch({
+      type: 'SUBMIT_ERROR',
     });
   }
 }

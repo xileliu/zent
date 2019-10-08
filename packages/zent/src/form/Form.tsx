@@ -47,12 +47,16 @@ export interface IFormProps<
   onSubmit?: (form: ZentForm<T>, e?: React.SyntheticEvent) => void;
   onSubmitFail?: (e: unknown) => void;
   onSubmitSuccess?: () => void;
+  disableEnterSubmit: boolean;
 }
 
 export class Form<
   T extends Record<string, BasicModel<unknown>> = any
 > extends React.Component<IFormProps<T>> {
   static displayName = 'ZentForm';
+  static defaultProps = {
+    disableEnterSubmit: true,
+  };
 
   static CombineErrors = CombineErrors;
   static useForm = useForm;
@@ -79,7 +83,19 @@ export class Form<
     this.props.form.submit(e);
   };
 
-  private submit(e?: React.SyntheticEvent) {
+  private onKeyDown: React.KeyboardEventHandler<HTMLFormElement> = e => {
+    const { onKeyDown, disableEnterSubmit } = this.props;
+    if (
+      e.key === 'Enter' &&
+      disableEnterSubmit &&
+      (e.target as Element).tagName === 'INPUT'
+    ) {
+      e.preventDefault();
+    }
+    onKeyDown && onKeyDown(e);
+  };
+
+  private async submit(e?: React.SyntheticEvent) {
     const {
       onSubmit,
       form,
@@ -90,26 +106,19 @@ export class Form<
     if (!onSubmit) {
       return;
     }
-    form.validate();
-    if (!form.isValid()) {
-      this.scrollToFirstError();
-      return;
+    try {
+      await form.validate();
+      if (!form.isValid()) {
+        scrollToError && this.scrollToFirstError();
+        return;
+      }
+      await onSubmit(form, e);
+      onSubmitSuccess && onSubmitSuccess();
+      form.submitSuccess();
+    } catch (error) {
+      onSubmitFail && onSubmitFail(error);
+      form.submitError(error);
     }
-    Promise.resolve(onSubmit(form, e))
-      .then(
-        () => {
-          onSubmitSuccess && onSubmitSuccess();
-        },
-        error => {
-          onSubmitFail && onSubmitFail(error);
-          if (scrollToError) {
-            this.scrollToFirstError();
-          }
-        }
-      )
-      .then(() => {
-        form.submitStop();
-      });
   }
 
   scrollToFirstError() {
@@ -182,6 +191,7 @@ export class Form<
               className
             )}
             onSubmit={this.onSubmit}
+            onKeyDown={this.onKeyDown}
           >
             {children}
           </form>
