@@ -79,7 +79,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
         if (validateOccasion & ValidateOccasion.Change) {
           if (!taskRef.current) {
             taskRef.current = scheduleCallback(IdlePriority, () => {
-              model.validate();
+              model.validate(getValidateOption('change'));
             });
           } else {
             cancelCallback(taskRef.current);
@@ -96,7 +96,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       },
       onBlur() {
         if (validateOccasion & ValidateOccasion.Blur) {
-          model.validate();
+          model.validate(getValidateOption('blur'));
         }
       },
       onFocus() {
