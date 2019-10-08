@@ -24,6 +24,13 @@ function defaultGetValidateOption() {
   return ValidateOption.Default;
 }
 
+function withDefaultOption(option: ValidateOption | null | undefined) {
+  if (option == null) {
+    return ValidateOption.Default;
+  }
+  return option;
+}
+
 export function FormField<Value>(props: IFormFieldProps<Value>) {
   let model: FieldModel<Value>;
   if ((props as any).name) {
@@ -79,7 +86,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
         if (validateOccasion & ValidateOccasion.Change) {
           if (!taskRef.current) {
             taskRef.current = scheduleCallback(IdlePriority, () => {
-              model.validate(getValidateOption('change'));
+              model.validate(withDefaultOption(getValidateOption('change')));
             });
           } else {
             cancelCallback(taskRef.current);
@@ -96,7 +103,7 @@ export function FormField<Value>(props: IFormFieldProps<Value>) {
       },
       onBlur() {
         if (validateOccasion & ValidateOccasion.Blur) {
-          model.validate(getValidateOption('blur'));
+          model.validate(withDefaultOption(getValidateOption('blur')));
         }
       },
       onFocus() {
